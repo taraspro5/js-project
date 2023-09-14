@@ -1,0 +1,15 @@
+/* варс */
+@import './vars.css';
+
+/* база */
+@import './base.css';
+
+/* шрифти */
+@import './fonts.css';
+
+/* стилі секцій */
+@import './header.css';
+@import './main-hero.css';
+@import './main-section.css';
+
+@import './hero-favorite.css';
