@@ -1,2 +1,1 @@
-import './js/refs';
-import './js/swiper';
+import './js/modal-recipe.js'
