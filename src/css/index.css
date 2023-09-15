@@ -13,3 +13,5 @@
 @import './main-section.css';
 
 @import './hero-favorite.css';
+/* стилі модальних вікон */
+@import './modal-receipt.css';
