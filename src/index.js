@@ -1,1 +1,1 @@
-import './js/modal-receipt.js';
+import './js/modal-recipe.js';
