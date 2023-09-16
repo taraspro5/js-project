@@ -13,8 +13,8 @@ return response.data
       
 }
 
-refs.btnTest.addEventListener('click', onBtnTestClick)
-function onBtnTestClick() {
+refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
+export function onSeeRecipeBtnClick() {
   refs.modalReceiptBackdrop.classList.remove('is-hidden')
   window.addEventListener('keydown', onEscKeyPress)
   function onEscKeyPress(event) {
@@ -40,23 +40,50 @@ function onBtnTestClick() {
       }
                          
       refs.modalWindow.innerHTML = createModalReceiptMarkup(data)
+ console.log (createModalReceiptMarkup(data))
 
-
-      function renderVideo({ youtube, thumb, title }) {
+            
+  function renderVideo({ youtube, thumb, title }) {
         if (youtube) {
-          return `<div class="modal-receipt-video-wrapper"></div><video class="mobile-recipe-video"
-  src="${youtube}"
-  poster="${thumb}"
-  controls
-  autoplay
-  loop
-  preload="auto"
-></video><div/>`
+          return `<div class="modal-recipe-video-wrapper">
+  <img
+    class="modal-recipe-video-preview"
+    src="${thumb}"
+    alt="${title}"
+  />
+  <a
+    href="${youtube}"
+    target="_blank"
+    rel="noreferrer noopener"
+  >
+    <svg
+      class="modal-recipe-video-icon"
+      width="32"
+      height="32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M30.053 8.56a3.707 3.707 0 0 0-2.587-2.667C25.173 5.333 16 5.333 16 5.333s-9.173 0-11.466.614a3.707 3.707 0 0 0-2.587 2.666 38.667 38.667 0 0 0-.613 7.054c-.015 2.382.19 4.761.613 7.106a3.707 3.707 0 0 0 2.587 2.56c2.293.614 11.466.614 11.466.614s9.174 0 11.467-.614a3.706 3.706 0 0 0 2.587-2.666c.416-2.31.622-4.653.613-7a38.661 38.661 0 0 0-.613-7.107Z"
+        stroke="#F8F8F8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="m13 20.027 7.667-4.36L13 11.307v8.72Z"
+        stroke="#F8F8F8"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </a>
+</div>`
         }
         return `<div class="modal-receipt-thumb-wrapper"><img class="mobile-recipe-img" src="${thumb}" alt="${title}" /><div/>`
-      }
-            
-            
+      }     
+
       function renderIngridients(ingridients) {
         return ingridients.map(({ measure, name }) => `
     <div class="ingridient-wrapper"><div class="modal-receipt-ingr-name">${name}</div><div class="modal-receipt-ingr-measure">${measure}</div></div>`).join('')
@@ -68,16 +95,14 @@ function onBtnTestClick() {
     `).join('')
       }
             
-
       function createModalReceiptMarkup({ title, instructions, rating, time }) {
 
         const markup = `<button class="modal-receipt-close-btn" type="button" data-modal-close>
 <svg width="20" height="20" viewBox="0 0 20 20" fill="red" xmlns="http://www.w3.org/2000/svg">
 <path d="M15 5L5 15" stroke="#050505" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 <path d="M5 5L15 15" stroke="#050505" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-    </button> ${renderVideo(data)
-          } <h1 class="modal-receipt-title">${title}</h1>
+</svg> </button> ${renderVideo(data)}
+ <h1 class="modal-receipt-title">${title}</h1>
 <div class="modal-receipt-rating-time-wrapper">
   <div class="modal-receipt-rating-stars-wrapper">
   <p class="modal-recipe-rating-number">${Math.round(rating)}</p></div>${renderRatingStarts(Math.round(rating))}
@@ -106,7 +131,6 @@ function onBtnTestClick() {
       }
 
 
-
       function renderRatingStarts(rating) {
         let starsMarkup = '';
         const starOrange = `<div class="rating-stars-wrapper">
@@ -133,3 +157,4 @@ function onBtnTestClick() {
       }
     })
 }
+
