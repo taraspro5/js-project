@@ -1,0 +1,22 @@
+.hero-favorites-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 24px;
+  margin-top: auto;
+  margin-left: auto;
+  margin-top: 275px;
+  margin-bottom: 320px;
+}
+.hero-favorites-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  color: #050505;
+  max-width: 461px;
+}
+.container-image {
+  display: none;
+}
