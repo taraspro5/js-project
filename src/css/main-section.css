@@ -8,7 +8,10 @@
   gap: 64px;
 }
 
-.main-left {}
+.main-left {
+  /* display: none; */
+  /* background-color: lightcoral; */
+}
 
 .main-right {
   max-width: 782px;
@@ -701,3 +704,29 @@
 .active-pag-btn {
   background-color: #9BB537;
 }
+
+/*  */
+
+/* .pro-active {
+  background-color: lightseagreen;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eee;
+  margin-top: 1em;
+  padding-top: 0.5em;
+  list-style: none;
+}
+
+.pagination__item {
+  display: block;
+  margin: 0 0.25rem;
+  padding: 0.5em 1em;
+  border: 1px solid #999;
+  border-radius: 0.5em;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+} */
