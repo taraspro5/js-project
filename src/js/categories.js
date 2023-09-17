@@ -14,14 +14,15 @@ async function onClick(evt) {
   if (!evt.target.classList.contains('js-select-category')) {
     return;
   }
-  evt.target.classList.add('btn-select-active');
-  // make button disabled
+  
   const btnSelectCtg = document.querySelectorAll('.js-select-category');
   btnSelectCtg.forEach(button => {
     if (button.classList.contains('btn-select-active')) {
-      button.setAttribute('disabled', true);
+      button.classList.remove('btn-select-active')
     }
   });
+  evt.target.classList.add('btn-select-active');
+
   // backend request
   const resp = await axios.get(
     `${BASE_URL}/recipes?category=${evt.target.textContent}`
@@ -75,19 +76,47 @@ function renderMarkup(data) {
 function markupMenu(data) {
   return data
     .map(
-      ({ preview, title, description, rating }) => `<li class="main-img-items">
-    <img class="main-img-img" src="${preview}" alt="" />
-    <div class="main-img-text-wrap">
-      <h3 class="main-img-title">${title}</h3>
-      <p class="main-img-text">${description}</p>
-      <div class="main-img-subtext-wrap">
-        <div class="main-rating-wrap">
-          <span class="main-rating-span">${rating}</span>
-        </div>
-        <button class="main-rating-btn">See recipe</button>
+      ({ thumb, title, description, rating }) => `<div class="main-img-items">
+      <img class="main-img-img" src="${thumb}" alt="${title}" />
+      <div class="main-heart">
+        <svg>
+          <use
+            href="./images/icons.svg#icon-empty-heart"
+            width="22"
+            height="22"
+          ></use>
+        </svg>
       </div>
-    </div>
-  </li>`
+      <div class="main-img-text-wrap">
+        <h3 class="main-img-title">${title}</h3>
+        <p class="main-img-text">
+          ${description}
+        </p>
+        <div class="main-img-subtext-wrap">
+          <div class="main-rating-wrap">
+            <span class="main-rating-span">${Math.round(
+              rating
+            )}</span>
+            <svg width="14" height="14">
+              <use href="./images/icons.svg#icon-star"></use>
+            </svg>
+            <svg width="14" height="14">
+              <use href="./images/icons.svg#icon-star"></use>
+            </svg>
+            <svg width="14" height="14">
+              <use href="./images/icons.svg#icon-star"></use>
+            </svg>
+            <svg width="14" height="14">
+              <use href="./images/icons.svg#icon-star"></use>
+            </svg>
+            <svg width="14" height="14">
+              <use href="./images/icons.svg#icon-empty-star"></use>
+            </svg>
+          </div>
+          <button class="main-rating-btn">See recipe</button>
+        </div>
+      </div>
+    </div>`
     )
     .join('');
 }
