@@ -1,3 +1,5 @@
+import { onSeeRecipeBtnClick } from "./modal-recipe";
+
 const btnEl = document.getElementById('btn');
 const divEl = document.getElementById('main-img-menu');
 const ratingEl = document.querySelector('.main-rating-span');
@@ -427,6 +429,7 @@ divEl.addEventListener('click', e => {
     return;
   }
   btnId = e.target.id;
+  console.log(btnId)
 });
 
 const paginationList = document.querySelector('.js-pagination');
@@ -470,3 +473,6 @@ function updateActivePage(e) {
     }
   }
 }
+console.log(divEl)
+divEl.addEventListener('click', onSeeRecipeBtnClick)
+
