@@ -14,7 +14,13 @@ return response.data
 }
 
 refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
-export function onSeeRecipeBtnClick() {
+export function onSeeRecipeBtnClick(event) {
+  
+  console.log(event)
+  if (!event.target.nodeName === "BUTTON") {
+    return
+  }
+  console.log(event.target.id)
   refs.modalReceiptBackdrop.classList.remove('is-hidden')
   window.addEventListener('keydown', onEscKeyPress)
   function onEscKeyPress(event) {
@@ -31,7 +37,7 @@ export function onSeeRecipeBtnClick() {
     }
   }
 
-  fetchWholeReceipt('6462a8f74c3d0ddd28897fba')
+  fetchWholeReceipt(id)
     .then((data) => {
            
       if (data.length === 0) {
