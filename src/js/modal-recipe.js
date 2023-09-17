@@ -160,3 +160,4 @@ export function onSeeRecipeBtnClick(event) {
     })
 }
 
+export {createModalReceiptMarkup}
