@@ -8,7 +8,8 @@
   gap: 64px;
 }
 
-.main-left {}
+.main-left {
+}
 
 .main-right {
   max-width: 782px;
@@ -77,19 +78,19 @@
   gap: 8px;
 }
 
-/* .main-time-wrapper {
+.main-time-wrapper {
   padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* gap: 18px; */
-  border: 1px solid rgba(5, 5, 5, 0.20);
+  gap: 18px;
+  border: 1px solid rgba(5, 5, 5, 0.2);
   border-radius: 15px;
   position: relative;
   max-width: 89px;
-} */
+}
 
-/* .main-time-wrapper-search {
+.main-time-wrapper-search {
   position: absolute;
   top: 100%;
   left: 0;
@@ -99,8 +100,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* display: none; */
-  border: 1px solid rgba(5, 5, 5, 0.20);
+  display: none;
+  border: 1px solid rgba(5, 5, 5, 0.2);
   border-radius: 15px;
   color: rgba(5, 5, 5, 0.5);
   font-family: Inter;
@@ -113,18 +114,16 @@
   box-shadow: 0px 4px 36px 0px rgba(0, 0, 0, 0.02);
   overflow: scroll;
   display: none;
-} */
+}
 
 .main-time-wrapper-search-items {
-  color: rgba(5, 5, 5, 0.30);
+  color: rgba(5, 5, 5, 0.3);
   font-family: Inter;
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
   line-height: 1.25;
-
-} */
-
+}
 .time-label {
   color: rgba(5, 5, 5, 0.5);
   font-family: Inter;
@@ -174,7 +173,7 @@
   justify-content: space-between;
   align-items: center;
   /* gap: 18px; */
-  border: 1px solid rgba(5, 5, 5, 0.20);
+  border: 1px solid rgba(5, 5, 5, 0.2);
   border-radius: 15px;
   position: relative;
 }
@@ -241,7 +240,6 @@
 }
 
 .main-reset-btn {
-
   border: none;
   background-color: transparent;
   cursor: pointer;
@@ -332,12 +330,12 @@
   border: none;
   padding: 8px 16px;
   border-radius: 8px;
-  background-color: #9BB537;
-  color: #F8F8F8;
+  background-color: #9bb537;
+  color: #f8f8f8;
 }
 
 .main-rating-btn:hover {
-  background-color: #9BB537;
+  background-color: #9bb537;
 }
 
 .main-img-title {
@@ -402,13 +400,13 @@
   background-color: transparent;
   transition: 0.4s;
   color: #050505;
-  border: 1px solid rgba(5, 5, 5, 0.30);
+  border: 1px solid rgba(5, 5, 5, 0.3);
   cursor: pointer;
 }
 
 .main-pagination-btn:hover {
   border: 1px solid rgba(5, 5, 5, 0);
-  background-color: #9BB537;
+  background-color: #9bb537;
 }
 
 /* .main-pagination-btn:hover {

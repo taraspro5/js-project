@@ -1,8 +1,10 @@
 import axios from "axios";
+import { onSeeRecipeBtnClick } from "./modal-recipe"
+import {createModalReceiptMarkup} from "./modal-recipe"
 
 const BASE_URL = 'https://tasty-treats-backend.p.goit.global/api/recipes/popular'
 
-const container = document.querySelector('.js-popular-recipes-list')
+const popularRecipesList = document.querySelector('.js-popular-recipes-list')
 // console.log(container)
 
 const getPopularRecipe = async () => {
@@ -20,20 +22,34 @@ getPopularRecipe()
       return
     }
     //   container.innerHTML = createMarkupPopularRecipies(data)
-      container.insertAdjacentHTML('beforeend', createMarkupPopularRecipies(data))
+      popularRecipesList.insertAdjacentHTML('beforeend', createMarkupPopularRecipies(data))
   })
 
-container.addEventListener('click', handlerPopularRecipeClick)
+  // Click and open modal //
+popularRecipesList.addEventListener('click', onClick)
 
-function handlerPopularRecipeClick(evt) {
-    if (evt.target === evt.currentTarget) {
-        return
-    }
+function onClick(evt) {
 
-    const currentPopularRecipe = evt.target.closest('.js-popular-recipes-item')
-    const { _id } = currentPopularRecipe.dataset;
-    // console.log(evt.target);
-    console.log(currentPopularRecipe);
+  onSeeRecipeBtnClick()
+
+  // const currentPopularRecipe = evt.target.closest('.js-popular-recipes-item')
+  // const { _id } = currentPopularRecipe.dataset;
+
+  openModal({ _id })
+  try {
+    createModalReceiptMarkup()
+  } catch {
+    err => console.log(err);
+  }
+}
+
+async function openModal({ _id }) {
+  const resp = await axios.get(`https://tasty-treats-backend.p.goit.global/api/recipes/${_id}`)
+  try {
+    return resp.data
+  } catch {
+    err => console.log(err);
+  }
 }
 
 // Markup //
@@ -50,3 +66,14 @@ function createMarkupPopularRecipies(arr) {
             </div>
     </li>`).join('');
 }
+
+// function handlerPopularRecipeClick(evt) {
+//     if (evt.target === evt.currentTarget) {
+//         return
+//     }
+
+//     const currentPopularRecipe = evt.target.closest('.js-popular-recipes-item')
+//     const { _id } = currentPopularRecipe.dataset;
+//     console.log(evt.target);
+//     console.log(currentPopularRecipe);
+// }
