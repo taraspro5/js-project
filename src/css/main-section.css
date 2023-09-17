@@ -9,6 +9,10 @@
 }
 
 .main-left {
+  /* display: none; */
+  /* background-color: lightcoral; */
+
+
 }
 
 .main-right {
@@ -470,3 +474,256 @@
   line-height: 1.22;
   /* 122.222% */
 }
+
+
+
+/*  */
+
+.time-wrapper {
+  width: 125px;
+
+  display: flex;
+  flex-direction: column;
+  /* gap: 8px; */
+}
+
+.main-area-wrap {
+  display: flex;
+  flex-direction: column;
+  /* gap: 8px; */
+  width: 141px;
+}
+
+.main-ingredients-wrap {
+  display: flex;
+  flex-direction: column;
+  /* gap: 8px; */
+  width: 188px;
+}
+
+.select-btn,
+.time-options li {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.main-area-wrapper,
+.area-options li {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.main-ingredients-wrapper,
+.ingredients-options li {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+/* .select-btn i {
+  transition: 0.3s linear;
+} */
+
+/* .wrapper.active .select-btn i {
+  transform: rotate(-180deg);
+} */
+
+
+.main-time-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.select-btn {
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* gap: 18px; */
+  border: 1px solid rgba(5, 5, 5, 0.20);
+  border-radius: 15px;
+  position: relative;
+}
+
+.open-selected-menu {
+  transform: rotate(-180deg);
+}
+
+.time-content {
+  background-color: #fff;
+  /* margin-top: 15px; */
+  /* padding: 20px; */
+  /* border-radius: 7px; */
+  display: none;
+  position: relative;
+}
+
+.area-content {
+  background-color: #fff;
+  display: none;
+  position: relative;
+}
+
+.ingredients-content {
+  background-color: #fff;
+  display: none;
+  position: relative;
+}
+
+.time-wrapper.active .time-content {
+  display: block;
+}
+
+.main-area-wrap.active .area-content {
+  display: block;
+}
+
+.main-ingredients-wrap.active .ingredients-content {
+  display: block;
+}
+
+.time-select-hover {
+  transition: 0.3s;
+}
+
+.time-select-hover:hover {
+  color: #000;
+}
+
+.area-select-hover {
+  transition: 0.3s;
+}
+
+.area-select-hover:hover {
+  color: #000;
+}
+
+
+
+.time-options {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 14px 18px;
+  width: 100%;
+  max-height: 128px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* display: none; */
+  border: 1px solid rgba(5, 5, 5, 0.20);
+  border-radius: 14px;
+  color: rgba(5, 5, 5, 0.50);
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  z-index: 10;
+  background-color: #FFF;
+  box-shadow: 0px 4px 36px 0px rgba(0, 0, 0, 0.02);
+  overflow-y: auto;
+}
+
+/* .time-options::-webkit-scrollbar-thumb {
+  border-radius: 12px;
+  background-color: rgba(5, 5, 5, 0.10);
+}
+
+.time-options::-webkit-scrollbar {
+  background-color: #9BB537;
+  width: 6px;
+  border-radius: 12px;
+} */
+
+.area-options {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 14px 18px;
+  width: 100%;
+  max-height: 188px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* display: none; */
+  border: 1px solid rgba(5, 5, 5, 0.20);
+  border-radius: 14px;
+  color: rgba(5, 5, 5, 0.50);
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  z-index: 10;
+  background-color: #FFF;
+  box-shadow: 0px 4px 36px 0px rgba(0, 0, 0, 0.02);
+  overflow-y: auto;
+}
+
+.ingredients-options {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 14px 18px;
+  width: 100%;
+  max-height: 188px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* display: none; */
+  border: 1px solid rgba(5, 5, 5, 0.20);
+  border-radius: 14px;
+  color: rgba(5, 5, 5, 0.50);
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+  z-index: 10;
+  background-color: #FFF;
+  box-shadow: 0px 4px 36px 0px rgba(0, 0, 0, 0.02);
+  overflow-y: auto;
+}
+
+/* .main-time-wrapper-search-items {
+  color: rgba(5, 5, 5, 0.30);
+  font-family: Inter;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.25;
+} */
+
+.active-pag-btn {
+  background-color: #9BB537;
+}
+
+/*  */
+
+/* .pro-active {
+  background-color: lightseagreen;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #eee;
+  margin-top: 1em;
+  padding-top: 0.5em;
+  list-style: none;
+}
+
+.pagination__item {
+  display: block;
+  margin: 0 0.25rem;
+  padding: 0.5em 1em;
+  border: 1px solid #999;
+  border-radius: 0.5em;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+} */
