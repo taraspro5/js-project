@@ -429,6 +429,7 @@ divEl.addEventListener('click', e => {
     return;
   }
   btnId = e.target.id;
+  console.log(btnId)
 });
 
 const paginationList = document.querySelector('.js-pagination');

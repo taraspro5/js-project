@@ -14,13 +14,7 @@ return response.data
 }
 
 refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
-export function onSeeRecipeBtnClick(event) {
-  
-  console.log(event)
-  if (!event.target.nodeName === "BUTTON") {
-    return
-  }
-  console.log(event.target.id)
+export function onSeeRecipeBtnClick() {
   refs.modalReceiptBackdrop.classList.remove('is-hidden')
   window.addEventListener('keydown', onEscKeyPress)
   function onEscKeyPress(event) {
