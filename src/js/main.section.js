@@ -183,7 +183,7 @@ function addMealToSearchArea(recipes) {
 function addMealToDOM(recipes) {
   const markup = recipes
     .map(item => {
-      const { description, rating, thumb, title } = item;
+      const { description, rating, thumb, title, _id: id } = item;
       ratingStar = rating;
       return `
       <div class="main-img-items">
@@ -221,7 +221,7 @@ function addMealToDOM(recipes) {
                           <use href="./images/icons.svg#icon-empty-star"></use>
                         </svg>
                       </div>
-                      <button class="main-rating-btn">See recipe</button>
+                      <button id="${id}" class="main-rating-btn">See recipe</button>
                     </div>
                   </div>
                 </div>
@@ -414,7 +414,59 @@ mainPagDotsEl.addEventListener('click', paginationHandler);
 
 function paginationHandler(e) {
   // console.dir(e.target.tagName);
-  if (e.target.tagName === 'BUTTON') {
-    console.log();
+  if (e.target.tagName !== 'BUTTON') {
+    return;
+  }
+  console.log(mainPagBtnEl);
+  mainPagBtnEl.classList.toggle('active-pag-btn');
+}
+
+divEl.addEventListener('click', e => {
+  let btnId;
+  if (e.target.nodeName !== 'BUTTON') {
+    return;
+  }
+  btnId = e.target.id;
+});
+
+const paginationList = document.querySelector('.js-pagination');
+
+paginationList.addEventListener('click', updateActivePage);
+
+function updateActivePage(e) {
+  const activeBtn = paginationList.querySelector('.active-pag-btn');
+  const currentBtn = e.target;
+
+  if (currentBtn.nodeName !== 'LI') {
+    return;
+  }
+
+  if (currentBtn.dataset.type === 'page') {
+    activeBtn.classList.remove('active-pag-btn');
+    currentBtn.classList.add('active-pag-btn');
+  }
+
+  if (currentBtn.dataset.type === 'prev') {
+    const prevActivePage = activeBtn.dataset.page - 1;
+    const prevPage = paginationList.querySelector(
+      `[data-page="${prevActivePage}"]`
+    );
+
+    if (prevPage) {
+      activeBtn.classList.remove('active-pag-btn');
+      prevPage.classList.add('active-pag-btn');
+    }
+  }
+
+  if (currentBtn.dataset.type === 'next') {
+    const nextActivePage = Number(activeBtn.dataset.page) + 1;
+    const nextPage = paginationList.querySelector(
+      `[data-page="${nextActivePage}"]`
+    );
+
+    if (nextPage) {
+      activeBtn.classList.remove('active-pag-btn');
+      nextPage.classList.add('active-pag-btn');
+    }
   }
 }

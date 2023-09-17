@@ -144,8 +144,8 @@
       <div class="main-img-wrap">
         <div id="main-img-menu" class="main-img-menu"></div>
       </div>
-      <div class="main-pagination">
-        <button class="main-pagination-btn">
+      <ul class="main-pagination js-pagination">
+        <li data-type="prev" data-page="1" class="main-pagination-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -159,9 +159,9 @@
               fill-opacity="0.5"
             />
           </svg>
-        </button>
+        </li>
 
-        <button class="main-pagination-btn">
+        <li data-type="prev" data-page="2" class="main-pagination-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -175,25 +175,23 @@
               fill-opacity="0.5"
             />
           </svg>
-        </button>
+        </li>
 
-        <button class="main-pagination-btn main-pagination-btn-numbers">
+        <li
+          data-type="page"
+          data-page="3"
+          class="main-pagination-btn active-pag-btn"
+        >
           1
-        </button>
+        </li>
 
-        <button class="main-pagination-btn main-pagination-btn-numbers">
-          2
-        </button>
+        <li data-type="page" data-page="4" class="main-pagination-btn">2</li>
 
-        <button class="main-pagination-btn main-pagination-btn-numbers">
-          3
-        </button>
+        <li data-type="page" data-page="5" class="main-pagination-btn">3</li>
 
-        <button class="main-pagination-btn main-pagination-btn-numbers">
-          ...
-        </button>
+        <li data-type="page" data-page="6" class="main-pagination-btn">...</li>
 
-        <button class="main-pagination-btn">
+        <li data-type="next" data-page="7" class="main-pagination-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -206,9 +204,9 @@
               fill="#050505"
             />
           </svg>
-        </button>
+        </li>
 
-        <button class="main-pagination-btn">
+        <li data-type="next" data-page="8" class="main-pagination-btn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -221,8 +219,8 @@
               fill="#050505"
             />
           </svg>
-        </button>
-      </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>
