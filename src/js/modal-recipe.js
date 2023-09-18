@@ -42,7 +42,6 @@ export function onSeeRecipeBtnClick(event) {
       }
                          
       refs.modalWindow.innerHTML = createModalReceiptMarkup(data)
- console.log (createModalReceiptMarkup(data))
 
             
   function renderVideo({ youtube, thumb, title }) {
@@ -97,7 +96,7 @@ export function onSeeRecipeBtnClick(event) {
     `).join('')
       }
             
-      function createModalReceiptMarkup({ title, instructions, rating, time }) {
+  function createModalReceiptMarkup({ title, instructions, rating, time }) {
 
         const markup = `<button class="modal-receipt-close-btn" type="button" data-modal-close>
 <svg width="20" height="20" viewBox="0 0 20 20" fill="red" xmlns="http://www.w3.org/2000/svg">
@@ -152,12 +151,18 @@ export function onSeeRecipeBtnClick(event) {
     
       // Додавання до локального сховища
       const addToFavBtn = document.querySelector('.modal-receipt-add-to-favorite-btn')
-           
+      let arrayFavourites = [];   
       addToFavBtn.addEventListener('click', onAddToFavBtnClick);
       function onAddToFavBtnClick() {
-        return localStorage.setItem("favourite-item", JSON.stringify(data))
+        arrayFavourites.push(data)
+        console.log(arrayFavourites)
+        localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+        return arrayFavourites;
+        
       }
     })
 }
 
-export {createModalReceiptMarkup}
+export { createModalReceiptMarkup };
+export { arrayFavourites }
+export {addToFavBtn}

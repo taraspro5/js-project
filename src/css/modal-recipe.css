@@ -260,13 +260,13 @@
   }
 
   .modal-receipt {
-    width: 295px;
+    width: 335px;
   }
 }
 
 @media screen and (min-width: 768px) {
   .modal-receipt {
-    width: 467px;
+    width: 531px;
     padding: 70px 32px;
   }
 
