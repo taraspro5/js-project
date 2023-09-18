@@ -1,155 +1,33 @@
-import { onSeeRecipeBtnClick } from "./modal-recipe";
-
-const btnEl = document.getElementById('btn');
-const divEl = document.getElementById('main-img-menu');
-const ratingEl = document.querySelector('.main-rating-span');
-const searchInput = document.querySelector('.main-search-input');
-const resetBtnEl = document.querySelector('.main-reset-btn');
-// const openRecipeOnMainSection = document.querySelector(".main-rating-btn");
-const timeEl = document.querySelector('.time-span');
-const areaFieldEl = document.querySelector('.area-span');
-const ingredientsFieldEl = document.querySelector('.ingredients-span');
-
-const wrapper = document.querySelector('.time-wrapper');
-const areaWrapper = document.querySelector('.main-area-wrap');
-const ingredientsWrapper = document.querySelector('.main-ingredients-wrap');
-const selectBtn = document.querySelector('.select-btn');
-const mainAreaBtn = document.querySelector('.main-area-wrapper');
-const mainIngredientsBtn = document.querySelector('.main-ingredients-wrapper');
-const selectedIconEl = document.querySelector('.selected-icon');
-const selectedAreaIconEl = document.querySelector('.selected-area-icon');
-const selectedIngredientsIconEl = document.querySelector(
-  '.selected-ingredients-icon'
-);
-const timeOptionsEl = document.querySelector('.time-options');
-const areaOptionsEl = document.querySelector('.area-options');
-const ingredientsOptionsEl = document.querySelector('.ingredients-options');
-
-const mainHeartBtn = document.getElementById('main-heart-btn');
-
-const mainPagDotsEl = document.querySelector('.main-pagination');
-const mainNumberPagDotsEl = document.querySelectorAll(
-  '.main-pagination-btn-numbers'
-);
-
-// timeOptionsEl.scrollIntoView({ top: 20, left: 20 });
-// all the items
-// const time = [
-//   "10min",
-//   "20min",
-//   "30min",
-//   "40min",
-//   "50min",
-//   "60min",
-//   "70min",
-//   "80min",
-// ];
-
-const areaEl = [
-  'Italian',
-  'French',
-  'Spanish',
-  'English',
-  'Ukrainian',
-  'Norwegian',
-];
-
-const ingredientsEl = [
-  'Cabbage',
-  'Cucumber',
-  'Tomato',
-  'Corn',
-  'Radish',
-  'Parsley',
-];
+const btnEl = document.getElementById('btn'),
+  divEl = document.getElementById('main-img-menu'),
+  ratingEl = document.querySelector('.main-rating-span'),
+  searchInput = document.querySelector('.main-search-input'),
+  resetBtnEl = document.querySelector('.main-reset-btn'),
+  timeEl = document.querySelector('.time-span'),
+  areaFieldEl = document.querySelector('.area-span'),
+  ingredientsFieldEl = document.querySelector('.ingredients-span'),
+  wrapper = document.querySelector('.time-wrapper'),
+  areaWrapper = document.querySelector('.main-area-wrap'),
+  ingredientsWrapper = document.querySelector('.main-ingredients-wrap'),
+  selectBtn = document.querySelector('.select-btn'),
+  mainAreaBtn = document.querySelector('.main-area-wrapper'),
+  mainIngredientsBtn = document.querySelector('.main-ingredients-wrapper'),
+  selectedIconEl = document.querySelector('.selected-icon'),
+  selectedAreaIconEl = document.querySelector('.selected-area-icon'),
+  selectedIngredientsIconEl = document.querySelector(
+    '.selected-ingredients-icon'
+  ),
+  timeOptionsEl = document.querySelector('.time-options'),
+  areaOptionsEl = document.querySelector('.area-options'),
+  ingredientsOptionsEl = document.querySelector('.ingredients-options'),
+  mainHeartBtn = document.getElementById('main-heart-btn'),
+  mainPagDotsEl = document.querySelector('.main-pagination'),
+  mainNumberPagDotsEl = document.querySelectorAll(
+    '.main-pagination-btn-numbers'
+  ),
+  mainPagBtnEl = document.querySelector('.main-pagination-btn');
 
 const favorites = [];
-
-// Add Time to select
-// function addTimeEl() {
-//   time.map((time) => {
-//     let li = `<li class="time-select-hover" onclick="updateName(this)">${time}</li>`;
-//     timeOptionsEl.insertAdjacentHTML("beforeend", li);
-//   });
-// }
-
-// addTimeEl();
-
-// Add Area to select
-// function addAreaEl() {
-//   areaEl.map((area) => {
-//     let liAr = `<li class="area-select-hover" onclick="updateArea(this)">${area}</li>`;
-//     areaOptionsEl.insertAdjacentHTML("beforeend", liAr);
-//   });
-// }
-
-// addAreaEl();
-
-// Add Ingredients to select
-// function addIngredientsEl() {
-//   ingredientsEl.map((ingredient) => {
-//     let liAr = `<li class="area-select-hover" onclick="updateIngredients(this)">${ingredient}</li>`;
-//     ingredientsOptionsEl.insertAdjacentHTML("beforeend", liAr);
-//   });
-// }
-
-// addIngredientsEl();
-
-// Function to update time field
-function updateName(selectedLi) {
-  wrapper.classList.remove('active');
-
-  selectBtn.firstElementChild.innerText = selectedLi.innerText;
-  selectedIconEl.classList.remove('open-selected-menu');
-}
-// Add event to time field
-selectBtn.addEventListener('click', () => {
-  wrapper.classList.toggle('active');
-  selectedIconEl.classList.toggle('open-selected-menu');
-});
-
-// Function to update area field
-function updateArea(selectedLi) {
-  areaWrapper.classList.remove('active');
-
-  mainAreaBtn.firstElementChild.innerText = selectedLi.innerText;
-  selectedAreaIconEl.classList.remove('open-selected-menu');
-}
-// Add event to area field
-mainAreaBtn.addEventListener('click', () => {
-  areaWrapper.classList.toggle('active');
-  selectedAreaIconEl.classList.toggle('open-selected-menu');
-});
-
-// Function to update ingredients field
-function updateIngredients(selectedLi) {
-  ingredientsWrapper.classList.remove('active');
-
-  mainIngredientsBtn.firstElementChild.innerText = selectedLi.innerText;
-  selectedIngredientsIconEl.classList.remove('open-selected-menu');
-}
-
-// Add event to ingredients field
-mainIngredientsBtn.addEventListener('click', () => {
-  ingredientsWrapper.classList.toggle('active');
-  selectedIngredientsIconEl.classList.toggle('open-selected-menu');
-});
-
-// btnEl.addEventListener("click", getRandomMeal);
-
-// async function imagesCall() {
-//   const resp = await fetch(
-//     "https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=3"
-//   );
-//   const data = await resp.json();
-//   return data;
-// }
-
-// function createMarkUp() {
-//   const data = imagesCall();
-// }
-
-// createMarkUp();
 
 let ratingStar = 0;
 
@@ -164,8 +42,8 @@ function getRandomMeal() {
       addMealToSearchArea(dataRecipes);
       addMealToDOM(dataRecipes);
       addTimeToField(dataRecipes);
-      addAreaToField(dataRecipes);
-      addIngredientsToField(dataRecipes);
+      // addAreaToField(dataRecipes);
+      // addIngredientsToField(dataRecipes);
     });
 }
 
@@ -182,19 +60,20 @@ function addMealToSearchArea(recipes) {
   // });
 }
 
+// ADD MEAL TO DOM
 function addMealToDOM(recipes) {
   const markup = recipes
     .map(item => {
       const { description, rating, thumb, title, _id: id } = item;
       ratingStar = rating;
       return `
-      <div class="main-img-items">
+      <li class="main-img-items">
                   <img class="main-img-img" src="${thumb}" alt="${title}" />
                   <div class="main-heart">
                     <button id="main-heart-btn" class="main-heart-btn">
-  <svg width="22" height="22">
-    <use href="./images/icons.svg#icon-empty-heart"></use>
-  </svg>
+  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+  <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M10.9939 4.70783C9.16115 2.5652 6.10493 1.98884 3.80863 3.95085C1.51234 5.91285 1.18905 9.19323 2.99234 11.5137C4.49166 13.443 9.02912 17.5121 10.5163 18.8291C10.6826 18.9764 10.7658 19.0501 10.8629 19.0791C10.9475 19.1043 11.0402 19.1043 11.1249 19.0791C11.2219 19.0501 11.3051 18.9764 11.4715 18.8291C12.9586 17.5121 17.4961 13.443 18.9954 11.5137C20.7987 9.19323 20.5149 5.89221 18.1791 3.95085C15.8434 2.00948 12.8266 2.5652 10.9939 4.70783Z" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
 </button>
                   </div>
                   <div class="main-img-text-wrap">
@@ -207,15 +86,15 @@ function addMealToDOM(recipes) {
                         <span class="main-rating-span">${Math.round(
                           rating
                         )}</span>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+</svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+</svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+</svg>
                         <svg width="14" height="14">
                           <use href="./images/icons.svg#icon-star"></use>
                         </svg>
@@ -226,53 +105,156 @@ function addMealToDOM(recipes) {
                       <button id="${id}" class="main-rating-btn">See recipe</button>
                     </div>
                   </div>
-                </div>
+                </li>
     `;
     })
     .join('');
 
   divEl.insertAdjacentHTML('beforeend', markup);
-
-  // setTimeout(() => {
-  //   const openRecipeOnMainSection =
-  //     document.querySelectorAll(".main-rating-btn");
-  //   console.log(openRecipeOnMainSection);
-
-  //   openRecipeOnMainSection.forEach((item) => {
-  //     item.addEventListener("click", (e) => {
-  //       const recipesBtnEl = recipes.map((item) => {
-  //         console.log(item.description);
-  //         // console.log(item.title);
-  //         // if (currentRecipeId === e.currentTarget.) {
-  //         //   console.log(item.description);
-  //         // }
-  //       });
-  //     });
-  //   });
-  // }, 1000);
 }
 
+// SELECTION === TIME / AREA / INGREDIENTS
+
+// Add time to field
 function addTimeToField(recipes) {
-  recipes.map(({ time }) => {
-    let li = `<li class="time-select-hover" onclick="updateName(this)">${time} min</li>`;
-    timeOptionsEl.insertAdjacentHTML('beforeend', li);
-  });
+  // console.log(recipes);
+
+  // const markUp = recipes
+  //   .map(({ time, _id: id }) => {
+  //     return `<li id="${id}" class="time-select-hover" onclick="updateTime(this)">${time} min</li>`;
+  //   })
+  //   .join("");
+
+  let unit = [];
+  let uniqueChar = recipes
+    .map(({ time }) => {
+      if (!unit.includes(time)) {
+        unit.push(time);
+      }
+    })
+    .join('');
+
+  const markUp = unit
+    .sort((a, b) => {
+      return a - b;
+    })
+    .map(time => {
+      if (time === '') {
+        return;
+      }
+      return `<li class="time-select-hover">${time} min</li>`;
+    })
+    .join('');
+
+  timeOptionsEl.insertAdjacentHTML('beforeend', markUp);
 }
-function addAreaToField(recipes) {
-  recipes.map(({ area }) => {
-    let li = `<li class="time-select-hover" onclick="updateArea(this)">${area}</li>`;
+
+timeOptionsEl.addEventListener('click', e => {
+  if (e.target.nodeName !== 'LI') {
+    return;
+  }
+  updateTime(e.target.innerText);
+});
+
+// Function to update time field
+function updateTime(selectedLi) {
+  wrapper.classList.remove('active');
+
+  selectBtn.firstElementChild.innerText = selectedLi;
+  selectedIconEl.classList.remove('open-selected-menu');
+}
+// Add event to time field
+selectBtn.addEventListener('click', () => {
+  wrapper.classList.toggle('active');
+  selectedIconEl.classList.toggle('open-selected-menu');
+});
+
+// AREA
+getSelectedArea();
+// Get area from api
+async function getSelectedArea() {
+  const res = await fetch(
+    'https://tasty-treats-backend.p.goit.global/api/areas'
+  );
+  const data = await res.json();
+
+  addSelectedArea(data);
+}
+
+// create markup for area
+function addSelectedArea(area) {
+  area.map(({ name, _id: id }) => {
+    let li = `<li id="${id}" class="time-select-hover">${name}</li>`;
     areaOptionsEl.insertAdjacentHTML('beforeend', li);
   });
 }
-function addIngredientsToField(recipes) {
-  recipes.map(({ category }) => {
-    let li = `<li class="time-select-hover" onclick="updateIngredients(this)">${category}</li>`;
+
+areaOptionsEl.addEventListener('click', e => {
+  if (e.target.nodeName !== 'LI') {
+    return;
+  }
+  updateArea(e.target.innerText);
+});
+
+function updateArea(selectedLi) {
+  areaWrapper.classList.remove('active');
+
+  mainAreaBtn.firstElementChild.innerText = selectedLi;
+  selectedAreaIconEl.classList.remove('open-selected-menu');
+}
+// Add event to area field
+mainAreaBtn.addEventListener('click', () => {
+  areaWrapper.classList.toggle('active');
+  selectedAreaIconEl.classList.toggle('open-selected-menu');
+});
+
+// INGREDIENTS
+// Get Ingredients from api
+getSelectedIngredients();
+// Get area from api
+async function getSelectedIngredients() {
+  const res = await fetch(
+    'https://tasty-treats-backend.p.goit.global/api/ingredients'
+  );
+  const data = await res.json();
+
+  addIngredientsToField(data);
+}
+
+let IngredientsId = '';
+// create markup for area
+function addIngredientsToField(ingr) {
+  ingr.map(({ name, _id: id }) => {
+    let li = `<li id="${id}" class="time-select-hover">${name}</li>`;
     ingredientsOptionsEl.insertAdjacentHTML('beforeend', li);
   });
 }
 
+ingredientsOptionsEl.addEventListener('click', e => {
+  if (e.target.nodeName !== 'LI') {
+    return;
+  }
+  updateIngredients(e.target.innerText);
+});
+
+// Function to update ingredients field
+function updateIngredients(selectedLi) {
+  ingredientsWrapper.classList.remove('active');
+
+  mainIngredientsBtn.firstElementChild.innerText = selectedLi;
+  selectedIngredientsIconEl.classList.remove('open-selected-menu');
+}
+
+// Add event to ingredients field
+mainIngredientsBtn.addEventListener('click', () => {
+  ingredientsWrapper.classList.toggle('active');
+  selectedIngredientsIconEl.classList.toggle('open-selected-menu');
+});
+
+// SEARCH INPUT
 searchInput.addEventListener('search', searchInputHandler);
 
+// SEARCH INPUT FETCH
 function searchInputHandler() {
   const valueOnSearchEl = searchInput.value;
   // Check for empty
@@ -349,6 +331,7 @@ function searchInputHandler() {
   searchInput.value = '';
 }
 
+// ADD SEARCH INPUT TO DOM
 function addSearchMealToDom(categories) {
   const searchMarkUp = categories
     .map(item => {
@@ -404,14 +387,14 @@ function addSearchMealToDom(categories) {
   divEl.innerHTML = searchMarkUp;
 }
 
+// RESET BUTTON
 resetBtnEl.addEventListener('click', resetFilterHandler);
 
 function resetFilterHandler() {
   getRandomMeal();
 }
 
-// description  / rating / thumb / title
-
+// PAGINATION
 mainPagDotsEl.addEventListener('click', paginationHandler);
 
 function paginationHandler(e) {
@@ -472,6 +455,3 @@ function updateActivePage(e) {
     }
   }
 }
- divEl.addEventListener('click', onSeeRecipeBtnClick)
- 
- 

@@ -14,11 +14,11 @@ async function onClick(evt) {
   if (!evt.target.classList.contains('js-select-category')) {
     return;
   }
-  
+
   const btnSelectCtg = document.querySelectorAll('.js-select-category');
   btnSelectCtg.forEach(button => {
     if (button.classList.contains('btn-select-active')) {
-      button.classList.remove('btn-select-active')
+      button.classList.remove('btn-select-active');
     }
   });
   evt.target.classList.add('btn-select-active');
@@ -76,7 +76,7 @@ function renderMarkup(data) {
 function markupMenu(data) {
   return data
     .map(
-      ({ thumb, title, description, rating }) => `<div class="main-img-items">
+      ({ thumb, title, description, rating }) => `<li class="main-img-items">
       <img class="main-img-img" src="${thumb}" alt="${title}" />
       <div class="main-heart">
         <svg>
@@ -94,9 +94,7 @@ function markupMenu(data) {
         </p>
         <div class="main-img-subtext-wrap">
           <div class="main-rating-wrap">
-            <span class="main-rating-span">${Math.round(
-              rating
-            )}</span>
+            <span class="main-rating-span">${Math.round(rating)}</span>
             <svg width="14" height="14">
               <use href="./images/icons.svg#icon-star"></use>
             </svg>
@@ -116,7 +114,7 @@ function markupMenu(data) {
           <button class="main-rating-btn">See recipe</button>
         </div>
       </div>
-    </div>`
+    </li>`
     )
     .join('');
 }
