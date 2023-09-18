@@ -1,3 +1,5 @@
+import { onSeeRecipeBtnClick } from './modal-recipe';
+
 const btnEl = document.getElementById('btn'),
   divEl = document.getElementById('main-img-menu'),
   ratingEl = document.querySelector('.main-rating-span'),
@@ -455,3 +457,4 @@ function updateActivePage(e) {
     }
   }
 }
+divEl.addEventListener('click', onSeeRecipeBtnClick);

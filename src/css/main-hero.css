@@ -75,10 +75,20 @@
 /* контейнер для pading від хедера */
 .def {
   display: block;
-  padding-top: 91px;
+  padding-top: 89px;
+  padding-bottom: 80px;
 }
+
+@media screen and (min-width: 768px) {
+  .def {
+    padding-top: 87px;
+  }
+}
+
 @media screen and (min-width: 1280px) {
   .def {
+    padding-top: 94px;
+    padding-bottom: 100px;
     align-items: center;
     display: flex;
     overflow: visible;
