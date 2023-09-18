@@ -16,10 +16,8 @@
 @import './modal-recipe.css';
 @import './main-section-categoris.css';
 
-
 /* SIPER HEROOOOO */
 @import './swiper.css';
-@import '../../node_modules/swiper/swiper-bundle.css';
+/* @import '../../node_modules/swiper/swiper-bundle.css'; */
 
 @import './main-section-popular-recept.css';
-

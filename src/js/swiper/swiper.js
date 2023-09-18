@@ -1,5 +1,8 @@
-import Swiper from 'swiper';
-import { Navigation, Pagination } from 'swiper';
+// import Swiper from 'swiper';
+// import { Navigation, Pagination } from 'swiper';
+import Swiper, { Pagination, Navigation, Autoplay } from 'swiper';
+import 'swiper/swiper-bundle.min.css';
+
 // import '../../node_modules/swiper/swiper-bundle.css';
 
 import { createMarkup } from './swiper-markup';
@@ -20,10 +23,23 @@ const swiper = new Swiper('.mySwiper', {
     el: '.swiper-pagination',
     clickable: true,
   },
-  // autoplay: {
-  // delay: 5000,
-  // },
+  autoplay: {
+    delay: 5000,
+  },
 });
+// const swiper = new Swiper('.mySwiper', {
+//   modules: [Pagination, Navigation, Autoplay],
+//   allowSlideNext: true,
+//   pagination: {
+//     el: '.page',
+//     clickable: true,
+//   },
+//   autoplay: {
+//     delay: 1500,
+//   },
+//   speed: 800,
+//   loop: true,
+// });
 console.log(swiper);
 
 async function get() {
