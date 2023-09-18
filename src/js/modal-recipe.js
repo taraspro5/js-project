@@ -5,7 +5,8 @@ const refs = {
   btnTest: document.querySelector('.test-click-btn'),
   modalWindow: document.querySelector('.modal-receipt'),
   modalReceiptBackdrop: document.querySelector('.modal-receipt-backdrop'),
-  }
+}
+  let arrayFavourites = []; 
 
 const fetchWholeReceipt = async (id) => {
   const response = await axios.get(`https://tasty-treats-backend.p.goit.global/api/recipes/${id}`)
@@ -42,7 +43,6 @@ export function onSeeRecipeBtnClick(event) {
       }
                          
       refs.modalWindow.innerHTML = createModalReceiptMarkup(data)
- console.log (createModalReceiptMarkup(data))
 
             
   function renderVideo({ youtube, thumb, title }) {
@@ -97,7 +97,7 @@ export function onSeeRecipeBtnClick(event) {
     `).join('')
       }
             
-      function createModalReceiptMarkup({ title, instructions, rating, time }) {
+  function createModalReceiptMarkup({ title, instructions, rating, time }) {
 
         const markup = `<button class="modal-receipt-close-btn" type="button" data-modal-close>
 <svg width="20" height="20" viewBox="0 0 20 20" fill="red" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +118,8 @@ export function onSeeRecipeBtnClick(event) {
     <p class="modal-receipt-process-description"> ${instructions} </p>
     <div class="modal-receipt-btn-wrapper">
       <button class="modal-receipt-add-to-favorite-btn" type="button">Add to favorite</button>
-      <button class="modal-receipt-give-rating" type="button">Give a rating</button>
+      <button class="modal-receipt-remove-from-favorite-btn is-hidden" type="button">Remove from favorite</button>
+      
     </div>`
               
         return markup
@@ -152,12 +153,36 @@ export function onSeeRecipeBtnClick(event) {
     
       // Додавання до локального сховища
       const addToFavBtn = document.querySelector('.modal-receipt-add-to-favorite-btn')
-           
+      const removeFromFavBtn = document.querySelector('.modal-receipt-remove-from-favorite-btn')
+        
       addToFavBtn.addEventListener('click', onAddToFavBtnClick);
       function onAddToFavBtnClick() {
-        return localStorage.setItem("favourite-item", JSON.stringify(data))
+        arrayFavourites.push(data._id)
+        addToFavBtn.classList.add('is-hidden')
+        removeFromFavBtn.classList.remove('is-hidden')
+        console.log(arrayFavourites)
+        localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+        return arrayFavourites;
+        
       }
+//             removeFromFavBtn.addEventListener('click', onRemoveFromFavBtnClick);
+//       function onRemoveFromFavBtnClick() {
+        
+//  addToFavBtn.classList.remove('is-hidden')
+//         removeFromFavBtn.classList.add('is-hidden')
+//         console.log(arrayFavourites)
+//         let idToRemove=data._id
+//         let indexToRemove = arrayFavourites.findIndex(idToRemove)
+//         arrayFavourites.splice(indexToRemove, 1)
+//         console.log(arrayFavourites)
+//         localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+//         return arrayFavourites;
+        
+//       }
     })
 }
 
-export {createModalReceiptMarkup}
+export { createModalReceiptMarkup };
+export { arrayFavourites }
+export { addToFavBtn }
+
