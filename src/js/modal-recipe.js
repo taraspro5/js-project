@@ -5,7 +5,8 @@ const refs = {
   btnTest: document.querySelector('.test-click-btn'),
   modalWindow: document.querySelector('.modal-receipt'),
   modalReceiptBackdrop: document.querySelector('.modal-receipt-backdrop'),
-  }
+}
+  let arrayFavourites = []; 
 
 const fetchWholeReceipt = async (id) => {
   const response = await axios.get(`https://tasty-treats-backend.p.goit.global/api/recipes/${id}`)
@@ -117,7 +118,8 @@ export function onSeeRecipeBtnClick(event) {
     <p class="modal-receipt-process-description"> ${instructions} </p>
     <div class="modal-receipt-btn-wrapper">
       <button class="modal-receipt-add-to-favorite-btn" type="button">Add to favorite</button>
-      <button class="modal-receipt-give-rating" type="button">Give a rating</button>
+      <button class="modal-receipt-remove-from-favorite-btn is-hidden" type="button">Remove from favorite</button>
+      
     </div>`
               
         return markup
@@ -151,18 +153,36 @@ export function onSeeRecipeBtnClick(event) {
     
       // Додавання до локального сховища
       const addToFavBtn = document.querySelector('.modal-receipt-add-to-favorite-btn')
-      let arrayFavourites = [];   
+      const removeFromFavBtn = document.querySelector('.modal-receipt-remove-from-favorite-btn')
+        
       addToFavBtn.addEventListener('click', onAddToFavBtnClick);
       function onAddToFavBtnClick() {
-        arrayFavourites.push(data)
+        arrayFavourites.push(data._id)
+        addToFavBtn.classList.add('is-hidden')
+        removeFromFavBtn.classList.remove('is-hidden')
         console.log(arrayFavourites)
         localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
         return arrayFavourites;
         
       }
+//             removeFromFavBtn.addEventListener('click', onRemoveFromFavBtnClick);
+//       function onRemoveFromFavBtnClick() {
+        
+//  addToFavBtn.classList.remove('is-hidden')
+//         removeFromFavBtn.classList.add('is-hidden')
+//         console.log(arrayFavourites)
+//         let idToRemove=data._id
+//         let indexToRemove = arrayFavourites.findIndex(idToRemove)
+//         arrayFavourites.splice(indexToRemove, 1)
+//         console.log(arrayFavourites)
+//         localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+//         return arrayFavourites;
+        
+//       }
     })
 }
 
 export { createModalReceiptMarkup };
 export { arrayFavourites }
-export {addToFavBtn}
+export { addToFavBtn }
+
