@@ -8,6 +8,7 @@ body {
   overflow-x: hidden;
   /* transition: background-color 1000ms cubic-bezier(0.075, 0.82, 0.165, 1); */
 }
+
 main {
   flex-grow: 1;
 }
@@ -62,6 +63,7 @@ img {
   clip: rect(0 0 0 0);
   overflow: hidden;
 }
+
 /* 
 // налаштування контейнерів */
 @media screen and (min-width: 375px) {
