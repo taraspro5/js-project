@@ -40,7 +40,7 @@ const swiper = new Swiper('.mySwiper', {
 //   speed: 800,
 //   loop: true,
 // });
-console.log(swiper);
+// console.log(swiper);
 
 async function get() {
   const result = await getFetch();
