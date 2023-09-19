@@ -618,7 +618,7 @@ function paginationBtnHandler(recipes) {
 //     }
 //   }
 // }
-// divEl.addEventListener('click', onSeeRecipeBtnClick);
+divEl.addEventListener('click', onSeeRecipeBtnClick);
 
 // setLimitMeals();
 
