@@ -1,32 +1,50 @@
-<div class="container">
-  <div class="container-image">
-    <picture>
-      <source
-        media="(min-width: 1280px)"
-        srcset="
-          ./images/hero-favorites/hero-favorite-dekstop@1x.jpg 1x,
-          ./images/hero-favorites/hero-favorite-dekstop@2x.jpg 2x
-        "
-        type="image/jpg"
-      />
-      <source
-        media="(max-width: 1279px)"
-        srcset="
-          ./images/hero-favorites/hero-favorite-tablet@1x.jpg 1x,
-          ./images/hero-favorites/hero-favorite-tablet@2x.jpg 2x
-        "
-        type="image/jpg"
-      />
-    </picture>
+<main>
+  <div class="container">
+    <div class="hero-favorites-wrapper">
+      <div class="hero-favorites-container-image">
+        <picture>
+          <source
+            media="(min-width: 1280px)"
+            srcset="
+              ./images/hero-favorites/hero-favorite-dekstop@1x.jpg 1x,
+              ./images/hero-favorites/hero-favorite-dekstop@2x.jpg 2x
+            "
+            type="image/jpg"
+          />
+          <source
+            media="(min-width: 768px)"
+            srcset="
+              ./images/hero-favorites/hero-favorite-tablet@1x.jpg 1x,
+              ./images/hero-favorites/hero-favorite-tablet@2x.jpg 2x
+            "
+            type="image/jpg"
+          />
+          <source
+            media="(max-width: 767px)"
+            srcset="
+              ./images/hero-favorites/hero-favorite-phone@1x.jpg 1x,
+              ./images/hero-favorites/hero-favorite-phone@2x.jpg 2x
+            "
+            type="image/jpg"
+          />
+          <img
+            src="./images/hero-favorites/hero-favorite-phone@1x.jpg"
+            alt=""
+            width="335"
+            height="516"
+          />
+        </picture>
+      </div>
+      <div class="hero-favorites-content-wrapper">
+        <svg class="icon" width="68" height="58">
+          <use href="./images/icons.svg#icon-cooker-hat"></use>
+        </svg>
+        <p class="hero-favorites-text">
+          It appears that you haven't added any recipes to your favorites yet.
+          To get started, you can add recipes that you like to your favorites
+          for easier access in the future.
+        </p>
+      </div>
+    </div>
   </div>
-  <div class="hero-favorites-content-wrapper">
-    <svg class="icon" width="68" height="58">
-      <use href="./images/icons.svg#icon-cooker-hat"></use>
-    </svg>
-    <p class="hero-favorites-text">
-      It appears that you haven't added any recipes to your favorites yet. To
-      get started, you can add recipes that you like to your favorites for
-      easier access in the future.
-    </p>
-  </div>
-</div>
+</main>
