@@ -13,10 +13,12 @@
 @import './main-section.css';
 
 @import './hero-favorite.css';
-
-/* import Swiper styles */
-@import '../../node_modules/swiper/swiper-bundle.css';
-
-/* додатково для парної роботи в секції */
+@import './modal-recipe.css';
 @import './main-section-categoris.css';
+@import './order-now.css';
+
+/* SIPER HEROOOOO */
+@import './swiper.css';
+/* @import '../../node_modules/swiper/swiper-bundle.css'; */
+
 @import './main-section-popular-recept.css';
