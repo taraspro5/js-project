@@ -1,4 +1,14 @@
 .swiper {
-  width: 600px;
+  display: block;
+  width: 602px;
   height: 300px;
 }
+
+.swiper-wrapper {
+  width: auto;
+  display: flex;
+}
+
+/* .swiper-slide { */
+/* width: 300px; */
+/* } */

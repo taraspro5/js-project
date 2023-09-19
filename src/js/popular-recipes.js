@@ -5,20 +5,28 @@ import {createModalReceiptMarkup} from "./modal-recipe"
 const BASE_URL = 'https://tasty-treats-backend.p.goit.global/api/recipes/popular'
 
 const popularRecipesList = document.querySelector('.js-popular-recipes-list')
+
 // console.log(container)
 
 const getPopularRecipe = async () => {
+
   const response = await axios.get(`${BASE_URL}`)
-  console.log (response.data)
+  // console.log (response.data)
   return response.data
 }
+
+  const response = await axios.get(`${BASE_URL}`);
+  // console.log(response.data);
+  return response.data;
+};
+
 
 const recipies = getPopularRecipe()
 // console.log(recipies)
 getPopularRecipe()
   .then((data) => {
     if (data.length === 0) {
-      console.log(`Error`)
+      // console.log(`Error`)
       return
     }
     //   container.innerHTML = createMarkupPopularRecipies(data)
@@ -28,25 +36,17 @@ getPopularRecipe()
   // Click and open modal //
 popularRecipesList.addEventListener('click', onClick)
 
-function onClick(evt) {
-
-  onSeeRecipeBtnClick()
-
-  // const currentPopularRecipe = evt.target.closest('.js-popular-recipes-item')
-  // const { _id } = currentPopularRecipe.dataset;
-
-  openModal({ _id })
-  try {
-    createModalReceiptMarkup()
-  } catch {
-    err => console.log(err);
+async function onClick(evt) {
+  if (evt.target.nodeName !== "IMG") {
+    return
   }
-}
+  const dataId = evt.target.dataset.id
 
-async function openModal({ _id }) {
-  const resp = await axios.get(`https://tasty-treats-backend.p.goit.global/api/recipes/${_id}`)
+  const resp = await axios.get(`https://tasty-treats-backend.p.goit.global/api/recipes/${dataId}`)
+
   try {
-    return resp.data
+    onSeeRecipeBtnClick(dataId)
+    createModalReceiptMarkup(resp.data)
   } catch {
     err => console.log(err);
   }
@@ -55,8 +55,8 @@ async function openModal({ _id }) {
 // Markup //
 function createMarkupPopularRecipies(arr) {
     return arr.map(({ _id, title, description, preview }) =>
-    `<li data-id="${_id}" class="popular-recipes-item js-popular-recipes-item">
-        <img
+    `<li class="popular-recipes-item js-popular-recipes-item">
+        <img data-id="${_id}"
             class="popular-recipes-img"
             src="${preview}"
             alt="${title}"/>
@@ -66,14 +66,3 @@ function createMarkupPopularRecipies(arr) {
             </div>
     </li>`).join('');
 }
-
-// function handlerPopularRecipeClick(evt) {
-//     if (evt.target === evt.currentTarget) {
-//         return
-//     }
-
-//     const currentPopularRecipe = evt.target.closest('.js-popular-recipes-item')
-//     const { _id } = currentPopularRecipe.dataset;
-//     console.log(evt.target);
-//     console.log(currentPopularRecipe);
-// }
