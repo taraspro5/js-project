@@ -9,10 +9,17 @@ const popularRecipesList = document.querySelector('.js-popular-recipes-list')
 // console.log(container)
 
 const getPopularRecipe = async () => {
+
   const response = await axios.get(`${BASE_URL}`)
   // console.log (response.data)
   return response.data
 }
+
+  const response = await axios.get(`${BASE_URL}`);
+  // console.log(response.data);
+  return response.data;
+};
+
 
 const recipies = getPopularRecipe()
 // console.log(recipies)
