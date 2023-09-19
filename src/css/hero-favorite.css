@@ -10,6 +10,25 @@
   margin-top: 275px;
   margin-bottom: 320px;
 }
+
+@media screen and (min-width: 768px) {
+  .hero-favorites-content-wrapper {
+    margin-top: 0px;
+    margin-bottom: 64px;
+  }
+}
+
+.hero-favorites-container-image {
+  display: none;
+  margin-bottom: 64px;
+}
+
+@media screen and (min-width: 768px) {
+  .hero-favorites-container-image {
+    display: block;
+  }
+}
+
 .hero-favorites-text {
   font-size: 14px;
   font-weight: 400;
