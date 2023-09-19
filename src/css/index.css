@@ -19,6 +19,6 @@
 
 /* SIPER HEROOOOO */
 @import './swiper.css';
-/* @import '../../node_modules/swiper/swiper-bundle.css'; */
+@import '../../node_modules/swiper/swiper-bundle.css';
 
 @import './main-section-popular-recept.css';
