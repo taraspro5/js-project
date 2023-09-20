@@ -25,7 +25,7 @@ async function onClick(evt) {
   
   // backend request
   const resp = await axios.get(
-    `${BASE_URL}/recipes?category=${evt.target.textContent}`
+    `${BASE_URL}/recipes?category=${evt.target.textContent}&limit=9`
   );
   try {
     menu.innerHTML = markupMenu(resp.data.results);
