@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -47,6 +51,10 @@ img {
   display: block;
   width: 100%;
   border-radius: 8px;
+}
+
+a:link {
+  text-decoration: none;
 }
 
 /* // приховування тексту */
