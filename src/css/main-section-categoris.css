@@ -72,6 +72,13 @@
   .categories {
     gap: 30px;
   }
+  .btn-all-categories {
+    padding: 14px 28px;
+  }
+  .active-all-cat-btn {
+    padding: 14px 29px;
+  }
+  
   .select-category-list {
     gap: 24px;
     width: 176px;
@@ -86,7 +93,7 @@
   }
   .btn-all-categories:hover,
   .btn-all-categories:focus {
-    padding: 14px 30px;
+    padding: 14px 29px;
     color: var(--light-body-color);
     background-color: var(--light-main-accent-color);
     border: none;
@@ -105,6 +112,6 @@
   }
   .btn-all-categories:hover,
   .btn-all-categories:focus {
-    padding: 15px 30px;
+    padding: 15px 29px;
   }
 }
