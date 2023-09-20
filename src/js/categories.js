@@ -28,7 +28,7 @@ async function onClick(evt) {
     `${BASE_URL}/recipes?category=${evt.target.textContent}`
   );
   try {
-    menu.insertAdjacentHTML('afterbegin', markupMenu(resp.data.results));
+    menu.innerHTML = markupMenu(resp.data.results);
   } catch {
     err => console.log(err);
   }

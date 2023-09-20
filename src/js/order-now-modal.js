@@ -15,3 +15,5 @@ document.addEventListener('keydown', function (evt) {
 function toggleModal() {
   refs.modal.classList.toggle('is-hidden');
 }
+
+export { toggleModal}

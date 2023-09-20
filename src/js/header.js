@@ -1,3 +1,4 @@
+import { toggleModal } from "./order-now-modal";
 const refs = {
   btnCart: document.querySelector('.js-shopping-cart'),
   btnBurger: document.querySelector('.js-burger-menu'),
@@ -21,17 +22,17 @@ function handlerClickerRemove() {
   document.body.style.overflow = 'visible';
 }
 
-refs.navList.addEventListener('click', onNavClick);
 
-function onNavClick(evt) {
-  if (evt.target === refs.favorBtn) {
-    refs.favorBtn.classList.add('header-active');
-    refs.homeBtn.classList.remove('header-active');
-  }
-  if (evt.target === refs.homeBtn) {
-    refs.homeBtn.classList.add('header-active');
-    refs.favorBtn.classList.remove('header-active');
-  }
+if (document.location.pathname === '/index.html') {
+  refs.homeBtn.classList.add('header-active');
+  console.log("index")
+} 
+if (document.location.pathname === '/favorite.html') {
+  refs.favorBtn.classList.add('header-active')
+  refs.homeBtn.classList.remove('header-active');
+  console.log("favor")
 }
 
-// refs.btnCart.addEventListener('click', toggleModal)
+refs.btnCart.addEventListener('click', toggleModal)
+ 
+
