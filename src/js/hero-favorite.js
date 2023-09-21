@@ -1,4 +1,5 @@
-import { createButtons, addMealToDOM } from './markup/common';
+import { createButtons, addMealToDOM } from './markup/favorite-page.js';
+import { onSeeRecipeBtnClick } from './modal-recipe';
 
 const KEY = 'favourite-items';
 const allButton = document.querySelector('.hero-favorite-buttons');
@@ -10,9 +11,12 @@ const list = document.querySelector('.hero-favorite-cards');
 const textFavoritesWrapper = document.querySelector(
   '.hero-favorites-content-wrapper'
 );
+const divEl = document.querySelector('.favorites-main-img-menu');
 
 allButton.addEventListener('click', handlerClick);
 btnAllCategories.addEventListener('click', handlerResetCategories);
+divEl.addEventListener('click', onSeeRecipeBtnClick);
+console.dir(divEl);
 
 if (data.length) {
   console.log(data);
