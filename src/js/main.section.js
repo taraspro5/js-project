@@ -61,13 +61,13 @@ function setLimitMeals() {
 
 // LOADER
 
-function showLoader() {
-  loaderEl.style.display = 'block';
-}
+// function showLoader() {
+//   loaderEl.style.display = 'block';
+// }
 
-function hideLoader() {
-  loaderEl.style.display = 'none';
-}
+// function hideLoader() {
+//   loaderEl.style.display = 'none';
+// }
 
 getRandomMeal();
 
