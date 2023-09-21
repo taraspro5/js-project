@@ -10,7 +10,7 @@ function addMealToDOM(recipes) {
   const markup = recipes
     .map(item => {
       const { description, rating, thumb, title, _id: id } = item;
-      ratingStar = formatNumber(rating.toFixed(1));
+      let ratingStar = formatNumber(rating.toFixed(1));
       // showLoader();
 
       return `
