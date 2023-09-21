@@ -11,4 +11,3 @@ import './js/main.section.js';
 import './js/popular-recipes.js';
 import './js/header.js';
 import './js/order-now-modal';
-
