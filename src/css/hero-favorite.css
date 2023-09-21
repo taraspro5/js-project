@@ -37,13 +37,20 @@
 }
 
 .hero-favorites-container-image {
-  /* display: none; */
+  display: none;
   margin-bottom: 64px;
+  margin-top: 45px;
 }
 
 @media screen and (min-width: 768px) {
   .hero-favorites-container-image {
     display: block;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .hero-favorites-container-image {
+    margin-top: 35px;
   }
 }
 

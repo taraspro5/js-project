@@ -12,14 +12,42 @@ const textFavoritesWrapper = document.querySelector(
   '.hero-favorites-content-wrapper'
 );
 const divEl = document.querySelector('.favorites-main-img-menu');
+const containerImg = document.querySelector('.hero-favorites-container-image');
+const containerButtons = document.querySelector(
+  '.container-button-markup-wrapper'
+);
 
 allButton.addEventListener('click', handlerClick);
 btnAllCategories.addEventListener('click', handlerResetCategories);
-divEl.addEventListener('click', onSeeRecipeBtnClick);
-console.dir(divEl);
+divEl.addEventListener('click', removeFavorite);
+
+function removeFavorite(evt) {
+  console.log(evt.target);
+  const target = evt.target;
+  const data = JSON.parse(localStorage.getItem(KEY)) ?? [];
+  if (target.classList.contains('favorite-main-heart-btn')) {
+    const res = data.filter(({ _id: id }) => id !== target.id);
+    console.log(res);
+    localStorage.setItem(KEY, JSON.stringify(res));
+    list.innerHTML = addMealToDOM(res);
+    const filterArray = res
+      .map(recipe => recipe.category)
+      .filter((el, idx, arr) => arr.indexOf(el) === idx);
+    const markup = createButtons(filterArray);
+    allButton.innerHTML = markup;
+    if (!res.length) {
+      containerButtons.classList.add('visually-hidden');
+      containerImg.classList.add('visually-hidden');
+      textFavoritesWrapper.classList.remove('visually-hidden');
+    }
+    return;
+  }
+}
 
 if (data.length) {
   console.log(data);
+  containerImg.style.display = 'block';
+  containerButtons.classList.remove('visually-hidden');
 
   // за допомогою меп створюю масив з категорій, а потім фільтром беру унікальні значення
   const filterArray = data
