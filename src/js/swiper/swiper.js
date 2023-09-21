@@ -1,69 +1,72 @@
-// import Swiper from 'swiper';
-
-// import { Navigation, Pagination } from 'swiper';
-// import Swiper, { Pagination, Navigation, Autoplay } from 'swiper';
-// import 'swiper/swiper-bundle.min.css';
-
-// import '../../node_modules/swiper/swiper-bundle.css';
-
-// import { createMarkup } from './swiper-markup';
-// import { getFetch } from './swiper-api';
-
-// const way = document.querySelector('.js-swiper');
-// console.log(way);
-// const mySwiper = document.querySelector('.mySwiper');
-// console.log(mySwiper);
-// console.log(getFetch());
-
-// const swiper = new Swiper('.mySwiper', {
-//   slidesPerView: 3,
-//   spaceBetween: 16,
-//   allowSlideNext: true,
-//   // allowSlideNext: true,
-//   pagination: {
-//     el: '.swiper-pagination',
-//     clickable: true,
-//   },
-//   autoplay: {
-//     delay: 5000,
-//   },
-// });
-
-// });
-// console.log(swiper);
-
-// async function get() {
-//   const result = await getFetch();
-//   // createMarkup(result);
-//   way.insertAdjacentHTML('beforeend', createMarkup(result));
-// }
-
-// get();
-// import Swiper from 'swiper';
-// import { Pagination, Autoplay } from 'swiper';
-// import 'swiper/css/pagination';
-// import 'swiper/css';
-
+import axios from 'axios';
 import Swiper from 'swiper';
-import { Pagination, Autoplay } from 'swiper';
-
-export const swiper = new Swiper('.swiper', {
-  noSwiping: true,
-  noSwipingSelector: '.swiper',
-  speed: 800,
-  slidesPerView: 0.7,
-  spaceBetween: '16px',
-  loop: true,
-  modules: [Pagination, Autoplay],
-  Autoplay: {
-    delay: 500,
-    disableOnInteraction: false,
-  },
-  pagination: {
-    el: '.pages-pagination',
-    clickable: true,
-  },
-});
-
-// swiper.use([Pagination]);
-swiper.autoplay.start();
+// import 'swiper';
+const BASE_URL = 'https://tasty-treats-backend.p.goit.global/api';
+const events = document.querySelector('.swiper-wrapper');
+function renderEvents(data) {
+  return data
+    .map(
+      ({
+        cook: { imgWebpUrl, name: cook },
+        topic: { name, area, previewWebpUrl, imgWebpUrl: imgDish },
+      }) => `        
+      
+  <!-- Slides -->
+  <div class="swiper-slide">
+    <div class="slide-wrapper">
+      <div class="block-cook">
+        <img
+          src="${imgWebpUrl}"
+          alt="${cook}"
+        />
+      </div>
+      <div class="block-dish">
+        <img
+          src="${previewWebpUrl}"
+          alt="${name}"
+        />
+        <div class="block-dish-ellipse"></div>
+        <h3 class="block-dish-descr">${name}</h3>
+        <p class="block-dish-area">${area}</p>
+      </div>
+      <div class="block-dish-image">
+        <img
+          src="${imgDish}"
+          alt="${name}"
+        />
+      </div>
+    </div>
+  </div>
+  
+  </div>
+  `
+    )
+    .join('');
+}
+async function renderSlider() {
+  const resp = await axios.get(`${BASE_URL}/events`);
+  events.innerHTML = renderEvents(resp.data);
+  const swiper = new Swiper('.slider-events', {
+    // direction: 'horizontal',
+    // loop: true,
+    // mousewheel: true,
+    // autoplay: true,
+    // slidesPerView: 0.69,
+    // spaceBetween: 8,
+    // breakpoints: {
+    //   768: {
+    //     slidesPerView: 0.8,
+    //     spaceBetween: 16,
+    //   },
+    //   1280: {
+    //     slidesPerView: 0.8,
+    //     spaceBetween: 16,
+    //   },
+    // },
+    // pagination: {
+    //   el: '.swiper-pagination',
+    //   clickable: true,
+    // },
+  });
+}
+renderSlider();
