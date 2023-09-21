@@ -78,7 +78,6 @@ a:link {
   .container {
     display: flex;
     flex-direction: row;
-    outline: 1px solid red;
     max-width: 375px;
     margin-left: auto;
     margin-right: auto;
@@ -89,7 +88,6 @@ a:link {
 
 @media screen and (min-width: 768px) {
   .container {
-    outline: 1px solid red;
     max-width: 768px;
     padding-left: 32px;
     padding-right: 32px;
@@ -98,7 +96,6 @@ a:link {
 
 @media screen and (min-width: 1280px) {
   .container {
-    outline: 1px solid red;
     max-width: 1280px;
     padding-left: 100px;
     padding-right: 100px;
