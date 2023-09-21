@@ -1,4 +1,8 @@
 import axios from 'axios';
+import debounce from 'lodash.debounce';
+
+import Pagination from 'tui-pagination';
+import 'tui-pagination/dist/tui-pagination.css';
 
 import { onSeeRecipeBtnClick } from './modal-recipe';
 
@@ -33,39 +37,75 @@ const btnEl = document.getElementById('btn'),
   startBtn = document.querySelector('#startBtn'),
   endBtn = document.querySelector('#endBtn'),
   prevNext = document.querySelectorAll('.prevNext'),
-  numbers = document.querySelectorAll('.pag-link');
+  numbers = document.querySelectorAll('.pag-link'),
+  loaderEl = document.querySelector('.loader');
 
 const favorites = [];
 
 let ratingStar = 0;
 
+// FUNCTION TO GIVE A LIMIT OF MEALS
+function setLimitMeals() {
+  let limit = 0;
+  if (window.innerWidth < 768) {
+    limit = 6;
+    return limit;
+  } else if (window.innerWidth < 1280) {
+    limit = 8;
+    return limit;
+  } else {
+    limit = 9;
+    return limit;
+  }
+}
+
+// LOADER
+
+function showLoader() {
+  loaderEl.style.display = 'block';
+}
+
+function hideLoader() {
+  loaderEl.style.display = 'none';
+}
+
 getRandomMeal();
 
-function getRandomMeal() {
+async function getRandomMeal() {
+  const limit = setLimitMeals();
   divEl.innerHTML = '';
-  fetch('https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=9')
-    .then(res => res.json())
-    .then(data => {
-      const dataRecipes = data.results;
-      addMealToSearchArea(dataRecipes);
-      addMealToDOM(dataRecipes);
-      addTimeToField(dataRecipes);
-      // addAreaToField(dataRecipes);
-      // addIngredientsToField(dataRecipes);
-    });
+  // showLoader();
+
+  const response = await fetch(
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}`
+  );
+  const data = await response.json();
+
+  // console.log(res);
+
+  const dataRecipes = data.results;
+  addMealToSearchArea(dataRecipes);
+  addMealToDOM(dataRecipes);
+  addTimeToField(dataRecipes);
+  // addAreaToField(dataRecipes);
+  // addIngredientsToField(dataRecipes);
+
+  // hideLoader();
 }
 
 function addMealToSearchArea(recipes) {
   timeEl.innerText = 'Select';
   areaFieldEl.innerText = 'Select';
   ingredientsFieldEl.innerText = 'Select';
+}
 
-  // const searchFields = recipes.map(({ time, area, category }) => {
-  //   timeEl.innerText = `${time} min`;
-  //   areaFieldEl.innerText = `${area}`;
-  //   ingredientsFieldEl.innerText = `${category}`;
-  //   // time / area / ingredients[]
-  // });
+// FUNCTION TO CONVERT NUMBERS TO AN INTEGER
+function formatNumber(number) {
+  if (number % 1 === 0) {
+    return Math.floor(number);
+  } else {
+    return number;
+  }
 }
 
 // ADD MEAL TO DOM
@@ -73,7 +113,9 @@ function addMealToDOM(recipes) {
   const markup = recipes
     .map(item => {
       const { description, rating, thumb, title, _id: id } = item;
-      ratingStar = rating;
+      ratingStar = formatNumber(rating.toFixed(1));
+      // showLoader();
+
       return `
       <li class="main-img-items">
                   <img class="main-img-img" src="${thumb}" alt="${title}" />
@@ -91,28 +133,33 @@ function addMealToDOM(recipes) {
                     </p>
                     <div class="main-img-subtext-wrap">
                       <div class="main-rating-wrap">
-                        <span class="main-rating-span">${Math.round(
-                          rating
-                        )}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
 
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-empty-star"></use>
-                        </svg>
                       </div>
                       <button id="${id}" class="main-rating-btn">See recipe</button>
                     </div>
@@ -121,6 +168,7 @@ function addMealToDOM(recipes) {
     `;
     })
     .join('');
+  // hideLoader();
 
   divEl.insertAdjacentHTML('beforeend', markup);
 }
@@ -139,12 +187,6 @@ divEl.addEventListener('click', e => {
 
 // Add time to field
 function addTimeToField(recipes) {
-  // const markUp = recipes
-  //   .map(({ time, _id: id }) => {
-  //     return `<li id="${id}" class="time-select-hover" onclick="updateTime(this)">${time} min</li>`;
-  //   })
-  //   .join("");
-
   let unit = [];
   let uniqueChar = recipes
     .map(({ time }) => {
@@ -170,10 +212,13 @@ function addTimeToField(recipes) {
 }
 
 timeOptionsEl.addEventListener('click', e => {
+  const timeText = e.target.innerText;
   if (e.target.nodeName !== 'LI') {
     return;
   }
-  updateTime(e.target.innerText);
+  const timeNumber = timeText.split('').slice(0, 3).join('').trim();
+  updateTime(timeText);
+  getMealByTime(timeNumber);
 });
 
 // Function to update time field
@@ -188,6 +233,76 @@ selectBtn.addEventListener('click', () => {
   wrapper.classList.toggle('active');
   selectedIconEl.classList.toggle('open-selected-menu');
 });
+
+// Function to markup by choosing time
+function getMealByTime(time) {
+  const limit = setLimitMeals();
+  fetch(
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&time=${time}`
+  )
+    .then(res => res.json())
+    .then(data => {
+      const dataRecipes = data.results
+        .map(item => {
+          const { description, rating, thumb, title, _id: id } = item;
+          ratingStar = formatNumber(rating.toFixed(1));
+
+          return `
+      <li class="main-img-items">
+                  <img class="main-img-img" src="${thumb}" alt="${title}" />
+                  <div class="main-heart">
+                    <button type="button" id="${id}" class="main-heart-btn">
+  <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" >
+  <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M10.9939 4.70783C9.16115 2.5652 6.10493 1.98884 3.80863 3.95085C1.51234 5.91285 1.18905 9.19323 2.99234 11.5137C4.49166 13.443 9.02912 17.5121 10.5163 18.8291C10.6826 18.9764 10.7658 19.0501 10.8629 19.0791C10.9475 19.1043 11.0402 19.1043 11.1249 19.0791C11.2219 19.0501 11.3051 18.9764 11.4715 18.8291C12.9586 17.5121 17.4961 13.443 18.9954 11.5137C20.7987 9.19323 20.5149 5.89221 18.1791 3.95085C15.8434 2.00948 12.8266 2.5652 10.9939 4.70783Z" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+                  </div>
+                  <div class="main-img-text-wrap">
+                    <h3 class="main-img-title">${title}</h3>
+                    <p class="main-img-text">
+                      ${description}
+                    </p>
+                    <div class="main-img-subtext-wrap">
+                      <div class="main-rating-wrap">
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+
+                      </div>
+                      <button id="${id}" class="main-rating-btn">See recipe</button>
+                    </div>
+                  </div>
+                </li>
+    `;
+        })
+        .join('');
+
+      divEl.innerHTML = dataRecipes;
+    });
+}
 
 // AREA
 getSelectedArea();
@@ -213,7 +328,13 @@ areaOptionsEl.addEventListener('click', e => {
   if (e.target.nodeName !== 'LI') {
     return;
   }
-  updateArea(e.target.innerText);
+  const areaText = e.target.innerText;
+
+  if (areaText === 'Unknown') {
+    return;
+  }
+  updateArea(areaText);
+  getMealByArea(areaText);
 });
 
 function updateArea(selectedLi) {
@@ -227,6 +348,77 @@ mainAreaBtn.addEventListener('click', () => {
   areaWrapper.classList.toggle('active');
   selectedAreaIconEl.classList.toggle('open-selected-menu');
 });
+
+// Function to get meal DOM by AREA
+function getMealByArea(area) {
+  const limit = setLimitMeals();
+
+  fetch(
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&area=${area}`
+  )
+    .then(res => res.json())
+    .then(data => {
+      const dataRecipes = data.results
+        .map(item => {
+          const { description, rating, thumb, title, _id: id } = item;
+          ratingStar = formatNumber(rating.toFixed(1));
+
+          return `
+      <li class="main-img-items">
+                  <img class="main-img-img" src="${thumb}" alt="${title}" />
+                  <div class="main-heart">
+                    <button type="button" id="${id}" class="main-heart-btn">
+  <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" >
+  <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M10.9939 4.70783C9.16115 2.5652 6.10493 1.98884 3.80863 3.95085C1.51234 5.91285 1.18905 9.19323 2.99234 11.5137C4.49166 13.443 9.02912 17.5121 10.5163 18.8291C10.6826 18.9764 10.7658 19.0501 10.8629 19.0791C10.9475 19.1043 11.0402 19.1043 11.1249 19.0791C11.2219 19.0501 11.3051 18.9764 11.4715 18.8291C12.9586 17.5121 17.4961 13.443 18.9954 11.5137C20.7987 9.19323 20.5149 5.89221 18.1791 3.95085C15.8434 2.00948 12.8266 2.5652 10.9939 4.70783Z" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+                  </div>
+                  <div class="main-img-text-wrap">
+                    <h3 class="main-img-title">${title}</h3>
+                    <p class="main-img-text">
+                      ${description}
+                    </p>
+                    <div class="main-img-subtext-wrap">
+                      <div class="main-rating-wrap">
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+
+                      </div>
+                      <button id="${id}" class="main-rating-btn">See recipe</button>
+                    </div>
+                  </div>
+                </li>
+    `;
+        })
+        .join('');
+
+      divEl.innerHTML = dataRecipes;
+    });
+}
 
 // INGREDIENTS
 // Get Ingredients from api
@@ -254,7 +446,11 @@ ingredientsOptionsEl.addEventListener('click', e => {
   if (e.target.nodeName !== 'LI') {
     return;
   }
-  updateIngredients(e.target.innerText);
+
+  const ingredients = e.target.innerText;
+  const ingredientsId = e.target.id;
+  updateIngredients(ingredients);
+  getMealByIngredients(ingredientsId);
 });
 
 // Function to update ingredients field
@@ -271,100 +467,29 @@ mainIngredientsBtn.addEventListener('click', () => {
   selectedIngredientsIconEl.classList.toggle('open-selected-menu');
 });
 
-// SEARCH INPUT
-searchInput.addEventListener('search', searchInputHandler);
+// Function to get meal to DOM by INGREDIENT
+function getMealByIngredients(ingr) {
+  const limit = setLimitMeals();
 
-// SEARCH INPUT FETCH
-function searchInputHandler() {
-  const valueOnSearchEl = searchInput.value;
-  // Check for empty
-  if (valueOnSearchEl.trim()) {
-    fetch(
-      `https://tasty-treats-backend.p.goit.global/api/recipes?&page=1&limit=9`
-    )
-      .then(res => res.json())
-      .then(data => {
-        const searchCategory = data.results
-          .map(item => {
-            if (item.category.toLowerCase() === valueOnSearchEl.trim()) {
-              return `
-      <div class="main-img-items">
-                  <img class="main-img-img" src="${item.thumb}" alt="${
-                item.title
-              }" />
-                  <div class="main-heart">
-                    <svg>
-                      <use
-                        href="./images/icons.svg#icon-empty-heart"
-                        width="22"
-                        height="22"
-                      ></use>
-                    </svg>
-                  </div>
-                  <div class="main-img-text-wrap">
-                    <h3 class="main-img-title">${item.title}</h3>
-                    <p class="main-img-text">
-                      ${item.description}
-                    </p>
-                    <div class="main-img-subtext-wrap">
-                      <div class="main-rating-wrap">
-                        <span class="main-rating-span">${Math.round(
-                          item.rating
-                        )}</span>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-empty-star"></use>
-                        </svg>
-                      </div>
-                      <button class="main-rating-btn">See recipe</button>
-                    </div>
-                  </div>
-                </div>
-    `;
-            }
-          })
-          .join('');
-        if (searchCategory === '') {
-          return alert(
-            'We don`t found any food by your categories. Choose another one.'
-          );
-        }
-        divEl.innerHTML = searchCategory;
-      });
-  }
+  fetch(
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&ingredient=${ingr}`
+  )
+    .then(res => res.json())
+    .then(data => {
+      const dataRecipes = data.results
+        .map(item => {
+          const { description, rating, thumb, title, _id: id } = item;
+          ratingStar = formatNumber(rating.toFixed(1));
 
-  searchInput.value = '';
-}
-
-// ADD SEARCH INPUT TO DOM
-function addSearchMealToDom(categories) {
-  const searchMarkUp = categories
-    .map(item => {
-      console.log(item.category);
-      const { description, rating, thumb, title } = item;
-      ratingStar = rating;
-      return `
-      <div class="main-img-items">
+          return `
+      <li class="main-img-items">
                   <img class="main-img-img" src="${thumb}" alt="${title}" />
                   <div class="main-heart">
-                    <svg>
-                      <use
-                        href="./images/icons.svg#icon-empty-heart"
-                        width="22"
-                        height="22"
-                      ></use>
-                    </svg>
+                    <button type="button" id="${id}" class="main-heart-btn">
+  <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" >
+  <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M10.9939 4.70783C9.16115 2.5652 6.10493 1.98884 3.80863 3.95085C1.51234 5.91285 1.18905 9.19323 2.99234 11.5137C4.49166 13.443 9.02912 17.5121 10.5163 18.8291C10.6826 18.9764 10.7658 19.0501 10.8629 19.0791C10.9475 19.1043 11.0402 19.1043 11.1249 19.0791C11.2219 19.0501 11.3051 18.9764 11.4715 18.8291C12.9586 17.5121 17.4961 13.443 18.9954 11.5137C20.7987 9.19323 20.5149 5.89221 18.1791 3.95085C15.8434 2.00948 12.8266 2.5652 10.9939 4.70783Z" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
                   </div>
                   <div class="main-img-text-wrap">
                     <h3 class="main-img-title">${title}</h3>
@@ -373,34 +498,144 @@ function addSearchMealToDom(categories) {
                     </p>
                     <div class="main-img-subtext-wrap">
                       <div class="main-rating-wrap">
-                        <span class="main-rating-span">${Math.round(
-                          rating
-                        )}</span>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-empty-star"></use>
-                        </svg>
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+
                       </div>
-                      <button class="main-rating-btn">See recipe</button>
+                      <button id="${id}" class="main-rating-btn">See recipe</button>
                     </div>
                   </div>
-                </div>
+                </li>
     `;
-    })
-    .join('');
+        })
+        .join('');
 
-  divEl.innerHTML = searchMarkUp;
+      divEl.innerHTML = dataRecipes;
+    });
+}
+
+// FUNCTION TO CAPITALIZE FIRST LETTER OF STRING
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// SEARCH INPUT
+
+searchInput.addEventListener('input', debounce(searchInputHandler, 300));
+
+// SEARCH INPUT FETCH
+function searchInputHandler() {
+  const valueOnSearchEl = searchInput.value;
+  const searchTextToLowerCase = valueOnSearchEl.toLowerCase().trim();
+  // const mealsName = capitalizeFirstLetter(searchTextToLowerCase);
+  const mealsName = searchTextToLowerCase;
+  const limit = setLimitMeals();
+
+  // Check for empty
+  if (mealsName) {
+    fetch(
+      `https://tasty-treats-backend.p.goit.global/api/recipes?limit=${limit}`
+    )
+      .then(res => res.json())
+      .then(data => {
+        const searchCategory = data.results
+          .map(item => {
+            const { description, rating, thumb, title, _id: id } = item;
+            ratingStar = formatNumber(rating.toFixed(1));
+
+            const mealsToLowerCase = title.toLowerCase();
+            const lol = mealsToLowerCase.includes(mealsName);
+            if (!lol) {
+              return;
+            }
+
+            return `
+      <li class="main-img-items">
+                  <img class="main-img-img" src="${thumb}" alt="${title}" />
+                  <div class="main-heart">
+                    <button type="button" id="${id}" class="main-heart-btn">
+  <svg class="heart-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" >
+  <path opacity="0.5" fill-rule="evenodd" clip-rule="evenodd" d="M10.9939 4.70783C9.16115 2.5652 6.10493 1.98884 3.80863 3.95085C1.51234 5.91285 1.18905 9.19323 2.99234 11.5137C4.49166 13.443 9.02912 17.5121 10.5163 18.8291C10.6826 18.9764 10.7658 19.0501 10.8629 19.0791C10.9475 19.1043 11.0402 19.1043 11.1249 19.0791C11.2219 19.0501 11.3051 18.9764 11.4715 18.8291C12.9586 17.5121 17.4961 13.443 18.9954 11.5137C20.7987 9.19323 20.5149 5.89221 18.1791 3.95085C15.8434 2.00948 12.8266 2.5652 10.9939 4.70783Z" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</button>
+                  </div>
+                  <div class="main-img-text-wrap">
+                    <h3 class="main-img-title">${title}</h3>
+                    <p class="main-img-text">
+                      ${description}
+                    </p>
+                    <div class="main-img-subtext-wrap">
+                      <div class="main-rating-wrap">
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+
+                      </div>
+                      <button id="${id}" class="main-rating-btn">See recipe</button>
+                    </div>
+                  </div>
+                </li>
+    `;
+          })
+          .join('');
+        // console.log(searchCategory);
+        // if (searchCategory === '') {
+        //   return alert(
+        //     'We don`t found any food by your categories. Choose another one.'
+        //   );
+        // }
+        divEl.innerHTML = searchCategory;
+      });
+  }
+
+  // searchInput.value = '';
 }
 
 // RESET BUTTON
@@ -408,89 +643,20 @@ resetBtnEl.addEventListener('click', resetFilterHandler);
 
 function resetFilterHandler() {
   getRandomMeal();
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
 }
 
-// PAGINATION
+//
+//
 
-// Setting an initial step and page number
-let currentStep = 0;
-let btnNumber = '';
+//
 
-// Function to update the button states
-const updateBtn = () => {
-  if (currentStep === 4) {
-    endBtn.disabled = true;
-    prevNext[1].disabled = true;
-  } else if (currentStep === 0) {
-    // If we are at the first step
-    startBtn.disabled = true;
-    prevNext[0].disabled = true;
-  } else {
-    endBtn.disabled = false;
-    prevNext[1].disabled = false;
-    startBtn.disabled = false;
-    prevNext[0].disabled = false;
-  }
-};
-
-// Add event listeners to the number pag-links
-numbers.forEach((number, numIndex) => {
-  number.addEventListener('click', e => {
-    e.preventDefault();
-    currentStep = numIndex;
-    btnNumber = number.innerText;
-    document
-      .querySelector('.active-pag-btn')
-      .classList.remove('active-pag-btn');
-    number.classList.add('active-pag-btn');
-    updateBtn();
-    getMealPagination(btnNumber);
-  });
-});
-
-// Add event listeners to the "Previous" and "Next" buttons
-prevNext.forEach(button => {
-  button.addEventListener('click', e => {
-    currentStep += e.target.id === 'next' ? 1 : -1;
-    numbers.forEach((number, numIndex) => {
-      number.classList.toggle('active-pag-btn', numIndex === currentStep);
-      btnNumber = String(currentStep + 1);
-      updateBtn();
-      getMealPagination(btnNumber);
-    });
-  });
-});
-// Add event listener to the "Start" button
-startBtn.addEventListener('click', () => {
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
-  currentStep = 0;
-  btnNumber = currentStep + 1;
-  getMealPagination(btnNumber);
-
-  updateBtn();
-  endBtn.disabled = false;
-  prevNext[1].disabled = false;
-});
-
-// Add event listener to the "End" button
-endBtn.addEventListener('click', () => {
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[4].classList.add('active-pag-btn');
-  currentStep = 4;
-  btnNumber = currentStep;
-  getMealPagination(btnNumber);
-  updateBtn();
-  startBtn.disabled = false;
-  prevNext[0].disabled = false;
-});
+//
 
 // Get Meal for pagination request
 function getMealPagination(page) {
+  const limit = setLimitMeals();
   fetch(
-    `https://tasty-treats-backend.p.goit.global/api/recipes?page=${page}&limit=9`
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=${page}&limit=${limit}`
   )
     .then(res => res.json())
     .then(data => {
@@ -505,7 +671,8 @@ function paginationBtnHandler(recipes) {
   const markup = recipes
     .map(item => {
       const { description, rating, thumb, title, _id: id } = item;
-      ratingStar = rating;
+      ratingStar = formatNumber(rating.toFixed(1));
+
       return `
       <li class="main-img-items">
                   <img class="main-img-img" src="${thumb}" alt="${title}" />
@@ -523,28 +690,33 @@ function paginationBtnHandler(recipes) {
                     </p>
                     <div class="main-img-subtext-wrap">
                       <div class="main-rating-wrap">
-                        <span class="main-rating-span">${Math.round(
-                          rating
-                        )}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <span class="main-rating-span">${ratingStar}</span>
+                        <svg class="${
+                          ratingStar >= 1 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 2 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 3 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
-  <path d="M6.04894 1.42705C6.3483 0.505742 7.6517 0.505741 7.95106 1.42705L8.79611 4.02786C8.92999 4.43989 9.31394 4.71885 9.74717 4.71885H12.4818C13.4505 4.71885 13.8533 5.95846 13.0696 6.52786L10.8572 8.13525C10.5067 8.3899 10.3601 8.84127 10.494 9.25329L11.339 11.8541C11.6384 12.7754 10.5839 13.5415 9.80017 12.9721L7.58779 11.3647C7.2373 11.1101 6.7627 11.1101 6.41222 11.3647L4.19983 12.9721C3.41612 13.5415 2.36164 12.7754 2.66099 11.8541L3.50604 9.25329C3.63992 8.84127 3.49326 8.3899 3.14277 8.13525L0.930391 6.52787C0.146677 5.95846 0.549452 4.71885 1.51818 4.71885H4.25283C4.68606 4.71885 5.07001 4.43989 5.20389 4.02786L6.04894 1.42705Z" fill="#EEA10C"/>
+                        <svg class="${
+                          ratingStar >= 4 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
+</svg>
+                        <svg class="${
+                          ratingStar >= 5 ? 'rating-star-fill' : 'rating-star'
+                        }" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 12 12">
+  <path d="M5.04894 1.42705C5.3483 0.505738 6.6517 0.50574 6.95106 1.42705L7.5716 3.33688C7.70547 3.7489 8.08943 4.02786 8.52265 4.02786H10.5308C11.4995 4.02786 11.9023 5.26748 11.1186 5.83688L9.49395 7.01722C9.14347 7.27187 8.99681 7.72323 9.13068 8.13525L9.75122 10.0451C10.0506 10.9664 8.9961 11.7325 8.21238 11.1631L6.58778 9.98278C6.2373 9.72813 5.7627 9.72814 5.41221 9.98278L3.78761 11.1631C3.0039 11.7325 1.94942 10.9664 2.24878 10.0451L2.86932 8.13526C3.00319 7.72323 2.85653 7.27186 2.50604 7.01722L0.881445 5.83688C0.0977311 5.26748 0.500508 4.02786 1.46923 4.02786H3.47735C3.91057 4.02786 4.29453 3.7489 4.4284 3.33688L5.04894 1.42705Z"/>
 </svg>
 
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="14" height="14">
-                          <use href="./images/icons.svg#icon-empty-star"></use>
-                        </svg>
                       </div>
                       <button id="${id}" class="main-rating-btn">See recipe</button>
                     </div>
@@ -558,79 +730,42 @@ function paginationBtnHandler(recipes) {
   divEl.insertAdjacentHTML('beforeend', markup);
 }
 
-// mainPagDotsEl.addEventListener('click', paginationHandler);
+// ADD EVENT FOR HEART ICON FOR FAVORITES
+divEl.addEventListener('click', onSeeRecipeBtnClick);
 
-// function paginationHandler(e) {
-//   // console.dir(e.target.tagName);
-//   if (e.target.tagName !== 'BUTTON') {
-//     return;
-//   }
-//   console.log(mainPagBtnEl);
-//   mainPagBtnEl.classList.toggle('active-pag-btn');
-// }
+// PAGINATION
+const options = {
+  totalItems: 32,
+  itemsPerPage: 1,
+  visiblePages: window.innerWidth < 768 ? 2 : 3,
+  page: 1,
+  currentPage: 1,
+  centerAlign: false,
+  firstItemClassName: 'tui-first-child',
+  lastItemClassName: 'tui-last-child',
+  template: {
+    page: '<a href="#" class="tui-page-btn">{{page}}</a>',
+    currentPage:
+      '<strong class="tui-page-btn tui-is-selected">{{page}}</strong>',
+    moveButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}"></span>' +
+      '</a>',
+    disabledMoveButton:
+      '<span class="tui-page-btn tui-is-disabled tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}"></span>' +
+      '</span>',
+    moreButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}-is-ellip">' +
+      '<span class="tui-ico-ellip">...</span>' +
+      '</a>',
+  },
+};
 
-// divEl.addEventListener('click', e => {
-//   let btnId;
-//   if (e.target.nodeName !== 'BUTTON') {
-//     return;
-//   }
-//   btnId = e.target.id;
-// });
+const pagination = new Pagination('pagination', options);
+pagination.on('beforeMove', onBeforeMovePagination);
 
-// const paginationList = document.querySelector('.js-pagination');
-
-// paginationList.addEventListener('click', updateActivePage);
-
-// function updateActivePage(e) {
-//   const activeBtn = paginationList.querySelector('.active-pag-btn');
-//   const currentBtn = e.target;
-
-//   if (currentBtn.nodeName !== 'LI') {
-//     return;
-//   }
-
-//   if (currentBtn.dataset.type === 'page') {
-//     activeBtn.classList.remove('active-pag-btn');
-//     currentBtn.classList.add('active-pag-btn');
-//   }
-
-//   if (currentBtn.dataset.type === 'prev') {
-//     const prevActivePage = activeBtn.dataset.page - 1;
-//     const prevPage = paginationList.querySelector(
-//       `[data-page="${prevActivePage}"]`
-//     );
-
-//     if (prevPage) {
-//       activeBtn.classList.remove('active-pag-btn');
-//       prevPage.classList.add('active-pag-btn');
-//     }
-//   }
-
-//   if (currentBtn.dataset.type === 'next') {
-//     const nextActivePage = Number(activeBtn.dataset.page) + 1;
-//     const nextPage = paginationList.querySelector(
-//       `[data-page="${nextActivePage}"]`
-//     );
-
-//     if (nextPage) {
-//       activeBtn.classList.remove('active-pag-btn');
-//       nextPage.classList.add('active-pag-btn');
-//     }
-//   }
-// }
-// divEl.addEventListener('click', onSeeRecipeBtnClick);
-
-// setLimitMeals();
-
-// function setLimitMeals() {
-//   if (window.innerWidth < 768) {
-//     this.limit = 6;
-//     return;
-//   } else if (window.innerWidth < 1280) {
-//     this.limit = 8;
-//     return;
-//   } else {
-//     this.limit = 9;
-//     return;
-//   }
-// }
+function onBeforeMovePagination(p) {
+  const { page } = p;
+  getMealPagination(page);
+}

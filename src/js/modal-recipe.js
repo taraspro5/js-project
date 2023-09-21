@@ -13,9 +13,10 @@ const fetchWholeReceipt = async id => {
 };
 // refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
 export function onSeeRecipeBtnClick(event) {
-  if (event.target.nodeName !== 'BUTTON') {
+  if (event.target.nodeName !== 'BUTTON' && event.target.nodeName !== 'IMG') {
     return;
   }
+refs.modalWindow.innerHTML = ''
   refs.modalReceiptBackdrop.classList.remove('is-hidden');
   window.addEventListener('keydown', onEscKeyPress);
   function onEscKeyPress(event) {
@@ -175,3 +176,4 @@ if (indexFav !== -1) {
 export { createModalReceiptMarkup };
 export { arrayFavourites };
 export { addToFavBtn };
+export { onAddToFavBtnClick };

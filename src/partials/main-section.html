@@ -2,7 +2,9 @@
   <div class="main-grid-container">
     <div class="main-left">
       <div class="categories">
-        <button class="btn-all-categories" type="button">All categories</button>
+        <button class="btn-all-categories active-all-cat-btn" type="button">
+          All categories
+        </button>
 
         <ul class="select-category-list"></ul>
       </div>
@@ -36,13 +38,13 @@
     <div class="main-right">
       <div class="main-search-menu">
         <div class="main-search-wrap">
-          <label class="main-search-label" for="search">Search</label>
+          <label class="main-search-label" for="text">Search</label>
           <div class="input-wrap">
             <input
               class="main-search-input"
-              type="search"
+              type="text"
               placeholder="Enter text"
-              name="search"
+              name="text"
             />
             <div class="input-search-icon-wrap">
               <svg
@@ -168,41 +170,11 @@
         </div>
       </div>
       <div class="main-img-wrap">
+        <div class="loader"></div>
         <ul id="main-img-menu" class="main-img-menu"></ul>
       </div>
       <div class="main-pagination">
-        <button
-          class="main-pagination-btn-start pagination-btn-1"
-          id="startBtn"
-          disabled
-        >
-          <i class="fa-solid fa-angles-left"></i>
-        </button>
-        <button
-          class="main-pagination-btn-start prevNext pagination-btn-1"
-          id="prev"
-          disabled
-        >
-          <i class="fa-solid fa-angle-left"></i>
-        </button>
-        <div class="pag-links">
-          <a href="#" class="pag-link main-pagination-btn active-pag-btn">
-            1
-          </a>
-          <a href="#" class="pag-link main-pagination-btn">2</a>
-          <a href="#" class="pag-link main-pagination-btn">3</a>
-          <a href="#" class="pag-link main-pagination-btn">4</a>
-          <a href="#" class="pag-link main-pagination-btn">5</a>
-        </div>
-        <button
-          class="main-pagination-btn-end prevNext pagination-btn-pre-last"
-          id="next"
-        >
-          <i class="fa-solid fa-angle-right"></i>
-        </button>
-        <button class="main-pagination-btn-end pagination-btn-last" id="endBtn">
-          <i class="fa-solid fa-angles-right"></i>
-        </button>
+        <div id="pagination" class="tui-pagination"></div>
       </div>
     </div>
   </div>

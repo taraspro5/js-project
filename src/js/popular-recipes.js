@@ -7,8 +7,6 @@ const BASE_URL =
 
 const popularRecipesList = document.querySelector('.js-popular-recipes-list');
 
-// console.log(container)
-
 const getPopularRecipe = async () => {
   const response = await axios.get(`${BASE_URL}`);
   // console.log (response.data)
@@ -20,33 +18,11 @@ getPopularRecipe().then(data => {
     // console.log(`Error`)
     return;
   }
-  //   container.innerHTML = createMarkupPopularRecipies(data)
-  popularRecipesList.insertAdjacentHTML(
-    'beforeend',
-    createMarkupPopularRecipies(data)
-  );
+  popularRecipesList.insertAdjacentHTML('beforeend', createMarkupPopularRecipies(data));
 });
 
 // Click and open modal //
-popularRecipesList.addEventListener('click', onClick);
-
-async function onClick(evt) {
-  if (evt.target.nodeName !== 'IMG') {
-    return;
-  }
-  const dataId = evt.target.dataset.id;
-
-  const resp = await axios.get(
-    `https://tasty-treats-backend.p.goit.global/api/recipes/${dataId}`
-  );
-
-  try {
-    onSeeRecipeBtnClick(dataId);
-    createModalReceiptMarkup(resp.data);
-  } catch {
-    err => console.log(err);
-  }
-}
+popularRecipesList.addEventListener('click', onSeeRecipeBtnClick);
 
 // Markup //
 function createMarkupPopularRecipies(arr) {
@@ -54,7 +30,7 @@ function createMarkupPopularRecipies(arr) {
     .map(
       ({ _id, title, description, preview }) =>
         `<li class="popular-recipes-item js-popular-recipes-item">
-        <img data-id="${_id}"
+        <img id="${_id}"
             class="popular-recipes-img"
             src="${preview}"
             alt="${title}"/>

@@ -5,6 +5,7 @@
         <picture>
           <source
             media="(min-width: 1280px)"
+            height="356"
             srcset="
               ./images/hero-favorites/hero-favorite-dekstop@1x.jpg 1x,
               ./images/hero-favorites/hero-favorite-dekstop@2x.jpg 2x
@@ -13,6 +14,7 @@
           />
           <source
             media="(min-width: 768px)"
+            height="356"
             srcset="
               ./images/hero-favorites/hero-favorite-tablet@1x.jpg 1x,
               ./images/hero-favorites/hero-favorite-tablet@2x.jpg 2x
@@ -28,9 +30,9 @@
             type="image/jpg"
           />
           <img
+            class="hero-favorite-img"
             src="./images/hero-favorites/hero-favorite-phone@1x.jpg"
             alt=""
-            width="335"
             height="516"
           />
         </picture>
@@ -44,6 +46,21 @@
           To get started, you can add recipes that you like to your favorites
           for easier access in the future.
         </p>
+      </div>
+      <div class="container-button-markup-wrapper">
+        <div class="hero-favorite-buttons-wrapper">
+          <button
+            class="hero-favorites-btn-design hero-favorite-btn-active js-hero-favorite-all-categories-listener"
+            type="button"
+          >
+            All categories
+          </button>
+          <ul class="hero-favorite-buttons"></ul>
+        </div>
+        <div class="main-img-wrap">
+          <ul class="hero-favorite-cards main-img-menu"></ul>
+        </div>
+        <div class="main-pagination"></div>
       </div>
     </div>
   </div>
