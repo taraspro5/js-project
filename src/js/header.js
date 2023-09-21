@@ -1,4 +1,4 @@
-import { toggleModal } from "./order-now-modal";
+import { toggleModal } from './order-now-modal';
 const refs = {
   btnCart: document.querySelector('.js-shopping-cart'),
   btnBurger: document.querySelector('.js-burger-menu'),
@@ -22,17 +22,14 @@ function handlerClickerRemove() {
   document.body.style.overflow = 'visible';
 }
 
-
 if (document.location.pathname === '/index.html') {
   refs.homeBtn.classList.add('header-active');
-  console.log("index")
-} 
+  // console.log("index")
+}
 if (document.location.pathname === '/favorite.html') {
-  refs.favorBtn.classList.add('header-active')
+  refs.favorBtn.classList.add('header-active');
   refs.homeBtn.classList.remove('header-active');
-  console.log("favor")
+  console.log('favor');
 }
 
-refs.btnCart.addEventListener('click', toggleModal)
- 
-
+refs.btnCart.addEventListener('click', toggleModal);

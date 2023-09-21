@@ -1,4 +1,8 @@
 import axios from 'axios';
+import debounce from 'lodash.debounce';
+
+import Pagination from 'tui-pagination';
+import 'tui-pagination/dist/tui-pagination.css';
 
 import { onSeeRecipeBtnClick } from './modal-recipe';
 
@@ -33,30 +37,63 @@ const btnEl = document.getElementById('btn'),
   startBtn = document.querySelector('#startBtn'),
   endBtn = document.querySelector('#endBtn'),
   prevNext = document.querySelectorAll('.prevNext'),
-  numbers = document.querySelectorAll('.pag-link');
+  numbers = document.querySelectorAll('.pag-link'),
+  loaderEl = document.querySelector('.loader');
 
 const favorites = [];
 
 let ratingStar = 0;
 
+// FUNCTION TO GIVE A LIMIT OF MEALS
+function setLimitMeals() {
+  let limit = 0;
+  if (window.innerWidth < 768) {
+    limit = 6;
+    return limit;
+  } else if (window.innerWidth < 1280) {
+    limit = 8;
+    return limit;
+  } else {
+    limit = 9;
+    return limit;
+  }
+}
+
+// LOADER
+
+function showLoader() {
+  loaderEl.style.display = 'block';
+}
+
+function hideLoader() {
+  loaderEl.style.display = 'none';
+}
+
 getRandomMeal();
 
-function getRandomMeal() {
+async function getRandomMeal() {
+  const limit = setLimitMeals();
   divEl.innerHTML = '';
-  fetch('https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=9')
-    .then(res => res.json())
-    .then(data => {
-      const dataRecipes = data.results;
-      addMealToSearchArea(dataRecipes);
-      addMealToDOM(dataRecipes);
-      addTimeToField(dataRecipes);
-      // addAreaToField(dataRecipes);
-      // addIngredientsToField(dataRecipes);
-    });
+  // showLoader();
+
+  const response = await fetch(
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}`
+  );
+  const data = await response.json();
+
+  // console.log(res);
+
+  const dataRecipes = data.results;
+  addMealToSearchArea(dataRecipes);
+  addMealToDOM(dataRecipes);
+  addTimeToField(dataRecipes);
+  // addAreaToField(dataRecipes);
+  // addIngredientsToField(dataRecipes);
+
+  // hideLoader();
 }
 
 function addMealToSearchArea(recipes) {
-  console.log(recipes);
   timeEl.innerText = 'Select';
   areaFieldEl.innerText = 'Select';
   ingredientsFieldEl.innerText = 'Select';
@@ -77,6 +114,7 @@ function addMealToDOM(recipes) {
     .map(item => {
       const { description, rating, thumb, title, _id: id } = item;
       ratingStar = formatNumber(rating.toFixed(1));
+      // showLoader();
 
       return `
       <li class="main-img-items">
@@ -130,6 +168,7 @@ function addMealToDOM(recipes) {
     `;
     })
     .join('');
+  // hideLoader();
 
   divEl.insertAdjacentHTML('beforeend', markup);
 }
@@ -197,8 +236,9 @@ selectBtn.addEventListener('click', () => {
 
 // Function to markup by choosing time
 function getMealByTime(time) {
+  const limit = setLimitMeals();
   fetch(
-    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=9&time=${time}`
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&time=${time}`
   )
     .then(res => res.json())
     .then(data => {
@@ -262,8 +302,6 @@ function getMealByTime(time) {
 
       divEl.innerHTML = dataRecipes;
     });
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
 }
 
 // AREA
@@ -313,8 +351,10 @@ mainAreaBtn.addEventListener('click', () => {
 
 // Function to get meal DOM by AREA
 function getMealByArea(area) {
+  const limit = setLimitMeals();
+
   fetch(
-    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=9&area=${area}`
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&area=${area}`
   )
     .then(res => res.json())
     .then(data => {
@@ -378,8 +418,6 @@ function getMealByArea(area) {
 
       divEl.innerHTML = dataRecipes;
     });
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
 }
 
 // INGREDIENTS
@@ -431,8 +469,10 @@ mainIngredientsBtn.addEventListener('click', () => {
 
 // Function to get meal to DOM by INGREDIENT
 function getMealByIngredients(ingr) {
+  const limit = setLimitMeals();
+
   fetch(
-    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=9&ingredient=${ingr}`
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=1&limit=${limit}&ingredient=${ingr}`
   )
     .then(res => res.json())
     .then(data => {
@@ -496,8 +536,6 @@ function getMealByIngredients(ingr) {
 
       divEl.innerHTML = dataRecipes;
     });
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
 }
 
 // FUNCTION TO CAPITALIZE FIRST LETTER OF STRING
@@ -506,18 +544,21 @@ function capitalizeFirstLetter(str) {
 }
 
 // SEARCH INPUT
-searchInput.addEventListener('search', searchInputHandler);
+
+searchInput.addEventListener('input', debounce(searchInputHandler, 300));
 
 // SEARCH INPUT FETCH
 function searchInputHandler() {
   const valueOnSearchEl = searchInput.value;
   const searchTextToLowerCase = valueOnSearchEl.toLowerCase().trim();
-  const mealsName = capitalizeFirstLetter(searchTextToLowerCase);
+  // const mealsName = capitalizeFirstLetter(searchTextToLowerCase);
+  const mealsName = searchTextToLowerCase;
+  const limit = setLimitMeals();
 
   // Check for empty
   if (mealsName) {
     fetch(
-      `https://tasty-treats-backend.p.goit.global/api/recipes?category=${mealsName}&page=1&limit=9`
+      `https://tasty-treats-backend.p.goit.global/api/recipes?limit=${limit}`
     )
       .then(res => res.json())
       .then(data => {
@@ -525,6 +566,12 @@ function searchInputHandler() {
           .map(item => {
             const { description, rating, thumb, title, _id: id } = item;
             ratingStar = formatNumber(rating.toFixed(1));
+
+            const mealsToLowerCase = title.toLowerCase();
+            const lol = mealsToLowerCase.includes(mealsName);
+            if (!lol) {
+              return;
+            }
 
             return `
       <li class="main-img-items">
@@ -578,73 +625,17 @@ function searchInputHandler() {
     `;
           })
           .join('');
-        if (searchCategory === '') {
-          return alert(
-            'We don`t found any food by your categories. Choose another one.'
-          );
-        }
+        // console.log(searchCategory);
+        // if (searchCategory === '') {
+        //   return alert(
+        //     'We don`t found any food by your categories. Choose another one.'
+        //   );
+        // }
         divEl.innerHTML = searchCategory;
       });
   }
 
-  searchInput.value = '';
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
-}
-
-// ADD SEARCH INPUT TO DOM
-function addSearchMealToDom(categories) {
-  const searchMarkUp = categories
-    .map(item => {
-      console.log(item.category);
-      const { description, rating, thumb, title } = item;
-      ratingStar = formatNumber(rating.toFixed(1));
-
-      return `
-      <div class="main-img-items">
-                  <img class="main-img-img" src="${thumb}" alt="${title}" />
-                  <div class="main-heart">
-                    <svg>
-                      <use
-                        href="./images/icons.svg#icon-empty-heart"
-                        width="22"
-                        height="22"
-                      ></use>
-                    </svg>
-                  </div>
-                  <div class="main-img-text-wrap">
-                    <h3 class="main-img-title">${title}</h3>
-                    <p class="main-img-text">
-                      ${description}
-                    </p>
-                    <div class="main-img-subtext-wrap">
-                      <div class="main-rating-wrap">
-                        <span class="main-rating-span">${rating}</span>
-                        <svg width="16" height="16">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="16" height="16">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="16" height="16">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="16" height="16">
-                          <use href="./images/icons.svg#icon-star"></use>
-                        </svg>
-                        <svg width="16" height="16">
-                          <use href="./images/icons.svg#icon-empty-star"></use>
-                        </svg>
-                      </div>
-                      <button class="main-rating-btn">See recipe</button>
-                    </div>
-                  </div>
-                </div>
-    `;
-    })
-    .join('');
-
-  divEl.innerHTML = searchMarkUp;
+  // searchInput.value = '';
 }
 
 // RESET BUTTON
@@ -652,89 +643,20 @@ resetBtnEl.addEventListener('click', resetFilterHandler);
 
 function resetFilterHandler() {
   getRandomMeal();
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
 }
 
-// PAGINATION
+//
+//
 
-// Setting an initial step and page number
-let currentStep = 0;
-let btnNumber = '';
+//
 
-// Function to update the button states
-const updateBtn = () => {
-  if (currentStep === 4) {
-    endBtn.disabled = true;
-    prevNext[1].disabled = true;
-  } else if (currentStep === 0) {
-    // If we are at the first step
-    startBtn.disabled = true;
-    prevNext[0].disabled = true;
-  } else {
-    endBtn.disabled = false;
-    prevNext[1].disabled = false;
-    startBtn.disabled = false;
-    prevNext[0].disabled = false;
-  }
-};
-
-// Add event listeners to the number pag-links
-numbers.forEach((number, numIndex) => {
-  number.addEventListener('click', e => {
-    e.preventDefault();
-    currentStep = numIndex;
-    btnNumber = number.innerText;
-    document
-      .querySelector('.active-pag-btn')
-      .classList.remove('active-pag-btn');
-    number.classList.add('active-pag-btn');
-    updateBtn();
-    getMealPagination(btnNumber);
-  });
-});
-
-// Add event listeners to the "Previous" and "Next" buttons
-prevNext.forEach(button => {
-  button.addEventListener('click', e => {
-    currentStep += e.target.id === 'next' ? 1 : -1;
-    numbers.forEach((number, numIndex) => {
-      number.classList.toggle('active-pag-btn', numIndex === currentStep);
-      btnNumber = String(currentStep + 1);
-      updateBtn();
-      getMealPagination(btnNumber);
-    });
-  });
-});
-// Add event listener to the "Start" button
-startBtn.addEventListener('click', () => {
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[0].classList.add('active-pag-btn');
-  currentStep = 0;
-  btnNumber = currentStep + 1;
-  getMealPagination(btnNumber);
-
-  updateBtn();
-  endBtn.disabled = false;
-  prevNext[1].disabled = false;
-});
-
-// Add event listener to the "End" button
-endBtn.addEventListener('click', () => {
-  document.querySelector('.active-pag-btn').classList.remove('active-pag-btn');
-  numbers[4].classList.add('active-pag-btn');
-  currentStep = 4;
-  btnNumber = currentStep;
-  getMealPagination(btnNumber);
-  updateBtn();
-  startBtn.disabled = false;
-  prevNext[0].disabled = false;
-});
+//
 
 // Get Meal for pagination request
 function getMealPagination(page) {
+  const limit = setLimitMeals();
   fetch(
-    `https://tasty-treats-backend.p.goit.global/api/recipes?page=${page}&limit=9`
+    `https://tasty-treats-backend.p.goit.global/api/recipes?page=${page}&limit=${limit}`
   )
     .then(res => res.json())
     .then(data => {
@@ -811,17 +733,39 @@ function paginationBtnHandler(recipes) {
 // ADD EVENT FOR HEART ICON FOR FAVORITES
 divEl.addEventListener('click', onSeeRecipeBtnClick);
 
-// setLimitMeals();
+// PAGINATION
+const options = {
+  totalItems: 32,
+  itemsPerPage: 1,
+  visiblePages: window.innerWidth < 768 ? 2 : 3,
+  page: 1,
+  currentPage: 1,
+  centerAlign: false,
+  firstItemClassName: 'tui-first-child',
+  lastItemClassName: 'tui-last-child',
+  template: {
+    page: '<a href="#" class="tui-page-btn">{{page}}</a>',
+    currentPage:
+      '<strong class="tui-page-btn tui-is-selected">{{page}}</strong>',
+    moveButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}"></span>' +
+      '</a>',
+    disabledMoveButton:
+      '<span class="tui-page-btn tui-is-disabled tui-{{type}}">' +
+      '<span class="tui-ico-{{type}}"></span>' +
+      '</span>',
+    moreButton:
+      '<a href="#" class="tui-page-btn tui-{{type}}-is-ellip">' +
+      '<span class="tui-ico-ellip">...</span>' +
+      '</a>',
+  },
+};
 
-// function setLimitMeals() {
-//   if (window.innerWidth < 768) {
-//     limit = 6;
-//     return;
-//   } else if (window.innerWidth < 1280) {
-//     limit = 8;
-//     return;
-//   } else {
-//     limit = 9;
-//     return;
-//   }
-// }
+const pagination = new Pagination('pagination', options);
+pagination.on('beforeMove', onBeforeMovePagination);
+
+function onBeforeMovePagination(p) {
+  const { page } = p;
+  getMealPagination(page);
+}
