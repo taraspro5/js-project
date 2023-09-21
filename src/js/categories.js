@@ -24,15 +24,40 @@ async function onClick(evt) {
   evt.target.classList.add('btn-select-active');
   
   // backend request
-  const resp = await axios.get(
-    `${BASE_URL}/recipes?category=${evt.target.textContent}&limit=9`
+
+      //  request for desktop
+    if(window.matchMedia("(min-width: 1280px)").matches) {
+    const resp = await axios.get(
+      `${BASE_URL}/recipes?category=${evt.target.textContent}&limit=9`);
+      try {
+       menu.innerHTML = markupMenu(resp.data.results);
+      } catch {
+        err => console.log(err);
+      }
+       
+      // request for tablet
+  } else if(window.matchMedia("(min-width: 768px)").matches) {
+    const resp = await axios.get(
+    `${BASE_URL}/recipes?category=${evt.target.textContent}&limit=8`
   );
   try {
     menu.innerHTML = markupMenu(resp.data.results);
   } catch {
     err => console.log(err);
   }
-}
+  
+    // request for mobile
+  } else if(window.matchMedia("(min-width: 270px)").matches) {
+    const resp = await axios.get(
+    `${BASE_URL}/recipes?category=${evt.target.textContent}&limit=6`
+  );
+  try {
+    menu.innerHTML = markupMenu(resp.data.results);
+  } catch {
+    err => console.log(err);
+  }
+  }
+}  
 
 async function resetCategories() {
   menu.innerHTML = '';
