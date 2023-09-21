@@ -2,7 +2,7 @@ import axios from 'axios';
 import debounce from 'lodash.debounce';
 
 import Pagination from 'tui-pagination';
-import 'tui-pagination/dist/tui-pagination.css';
+// import 'tui-pagination/dist/tui-pagination.css';
 
 import { onSeeRecipeBtnClick } from './modal-recipe';
 
