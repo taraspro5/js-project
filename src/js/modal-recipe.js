@@ -153,9 +153,9 @@ refs.modalWindow.innerHTML = ''
     const removeFromFavBtn = document.querySelector(
       '.modal-receipt-remove-from-favorite-btn'
     );
-        let arrayFromStorage = localStorage.getItem("favourite-items")
+   
     
-    let arrayFromStorageParsed = JSON.parse(arrayFromStorage)
+    let arrayFromStorageParsed = JSON.parse(localStorage.getItem("favourite-items")) || [];
 
          const indexFavModal = arrayFromStorageParsed.findIndex(element => element.title === data.title);
   
@@ -181,8 +181,8 @@ refs.modalWindow.innerHTML = ''
           function onRemoveFromFavBtnClick() {
      addToFavBtn.classList.remove('is-hidden')
             removeFromFavBtn.classList.add('is-hidden')
-            
-            const indexFavRem = arrayFavourites.findIndex(element => element.title === data.title);
+            console.log (arrayFromStorageParsed)
+            const indexFavRem = arrayFromStorageParsed.findIndex(element => element.title === data.title);
             console.log(indexFavRem)
 if (indexFavRem !== -1) {
   arrayFavourites.splice(indexFavRem, 1);
