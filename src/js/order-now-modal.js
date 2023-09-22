@@ -6,12 +6,7 @@ const refs = {
 
 refs.orderNowBtn.addEventListener('click', handleModalOpen);
 refs.closeModalBtn.addEventListener('click', handleModalClose);
-document.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Escape') {
-    handleModalClose();
-    document.removeEventListener('keydown');
-  }
-});
+document.addEventListener('keydown', handleEsc);
 
 function handleModalOpen() {
   refs.modal.classList.remove('is-hidden');
@@ -19,4 +14,11 @@ function handleModalOpen() {
 
 function handleModalClose() {
   refs.modal.classList.add('is-hidden');
+}
+
+function handleEsc(evt) {
+   if (evt.key === 'Escape') {
+     handleModalClose();
+     document.removeEventListener('keydown', handleEsc);
+   }
 }
