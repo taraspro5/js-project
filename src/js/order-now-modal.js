@@ -4,14 +4,19 @@ const refs = {
   modal: document.querySelector('[data-modal]'),
 };
 
-refs.orderNowBtn.addEventListener('click', toggleModal);
-refs.closeModalBtn.addEventListener('click', toggleModal);
+refs.orderNowBtn.addEventListener('click', handleModalOpen);
+refs.closeModalBtn.addEventListener('click', handleModalClose);
 document.addEventListener('keydown', function (evt) {
   if (evt.key === 'Escape') {
-    toggleModal();
+    handleModalClose();
+    document.removeEventListener('keydown');
   }
 });
 
-function toggleModal() {
-  refs.modal.classList.toggle('is-hidden');
+function handleModalOpen() {
+  refs.modal.classList.remove('is-hidden');
+}
+
+function handleModalClose() {
+  refs.modal.classList.add('is-hidden');
 }
