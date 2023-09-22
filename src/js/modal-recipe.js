@@ -18,6 +18,7 @@ export function onSeeRecipeBtnClick(event) {
   if (event.target.outerText !== "See recipe" && event.target.nodeName !== 'IMG') {
     return;
   }
+  
 refs.modalWindow.innerHTML = ''
   refs.modalReceiptBackdrop.classList.remove('is-hidden');
   window.addEventListener('keydown', onEscKeyPress);
@@ -40,6 +41,7 @@ refs.modalWindow.innerHTML = ''
       return;
     }
     refs.modalWindow.innerHTML = createModalReceiptMarkup(data);
+
     function renderVideo({ youtube, thumb, title }) {
       if (youtube) {
         return `<div class="modal-recipe-video-wrapper">
@@ -151,6 +153,16 @@ refs.modalWindow.innerHTML = ''
     const removeFromFavBtn = document.querySelector(
       '.modal-receipt-remove-from-favorite-btn'
     );
+        let arrayFromStorage = localStorage.getItem("favourite-items")
+    
+    let arrayFromStorageParsed = JSON.parse(arrayFromStorage)
+
+         const indexFavModal = arrayFromStorageParsed.findIndex(element => element.title === data.title);
+  
+    if (indexFavModal !== -1) {
+      addToFavBtn.classList.add('is-hidden');
+      removeFromFavBtn.classList.remove('is-hidden')
+  }
     addToFavBtn.addEventListener('click', onAddToFavBtnClick);
     function onAddToFavBtnClick() {
       const indexFav = arrayFavourites.findIndex(element => element.title === data.title);
@@ -163,17 +175,17 @@ refs.modalWindow.innerHTML = ''
       localStorage.setItem('favourite-items', JSON.stringify(arrayFavourites));
             return arrayFavourites;
 }
-
       
     }
                 removeFromFavBtn.addEventListener('click', onRemoveFromFavBtnClick);
           function onRemoveFromFavBtnClick() {
      addToFavBtn.classList.remove('is-hidden')
             removeFromFavBtn.classList.add('is-hidden')
-            console.log(arrayFavourites)
-
-if (indexFav !== -1) {
-  arrayFavourites.splice(indexFav, 1);
+            
+            const indexFavRem = arrayFavourites.findIndex(element => element.title === data.title);
+            console.log(indexFavRem)
+if (indexFavRem !== -1) {
+  arrayFavourites.splice(indexFavRem, 1);
   localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
             return arrayFavourites;
 }
