@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { heartBtnIcon, mainHeartBtn } from './main.section';
+console.log(heartBtnIcon)
 const refs = {
   btnTest: document.querySelector('.test-click-btn'),
   modalWindow: document.querySelector('.modal-receipt'),
@@ -152,19 +154,27 @@ refs.modalWindow.innerHTML = ''
     );
     addToFavBtn.addEventListener('click', onAddToFavBtnClick);
     function onAddToFavBtnClick() {
-             arrayFavourites.push(data);
+      const indexFav = arrayFavourites.findIndex(element => element.title === data.title);
+      if (indexFav === -1) {
+        arrayFavourites.push(data);
+        console.log(heartBtnIcon)
+       
+        heartBtnIcon.classList.toggle('main-heart-btn-favorite')
       addToFavBtn.classList.add('is-hidden');
       removeFromFavBtn.classList.remove('is-hidden');
       console.log(arrayFavourites);
       localStorage.setItem('favourite-items', JSON.stringify(arrayFavourites));
-      return arrayFavourites;
+            return arrayFavourites;
+}
+
+      
     }
                 removeFromFavBtn.addEventListener('click', onRemoveFromFavBtnClick);
           function onRemoveFromFavBtnClick() {
      addToFavBtn.classList.remove('is-hidden')
             removeFromFavBtn.classList.add('is-hidden')
             console.log(arrayFavourites)
-const indexFav = arrayFavourites.findIndex(element => element.title === data.title);
+
 if (indexFav !== -1) {
   arrayFavourites.splice(indexFav, 1);
   localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
@@ -178,3 +188,4 @@ export { createModalReceiptMarkup };
 export { arrayFavourites };
 export { addToFavBtn };
 export { onAddToFavBtnClick };
+export { fetchWholeReceipt };

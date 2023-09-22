@@ -4,7 +4,7 @@ import debounce from 'lodash.debounce';
 import Pagination from 'tui-pagination';
 // import 'tui-pagination/dist/tui-pagination.css';
 
-import { onSeeRecipeBtnClick } from './modal-recipe';
+import { arrayFavourites, fetchWholeReceipt, onSeeRecipeBtnClick } from './modal-recipe';
 
 const btnEl = document.getElementById('btn'),
   divEl = document.getElementById('main-img-menu'),
@@ -41,6 +41,8 @@ const btnEl = document.getElementById('btn'),
   loaderEl = document.querySelector('.main-loader'),
   mainSearchContainer = document.querySelector('.main-search-menu'),
   yearEl = document.getElementById('year');
+heartBtnIcon = document.querySelector('heart-icon')
+  
 
 yearEl.textContent = new Date().getFullYear();
 
@@ -222,14 +224,37 @@ function createMarkUp(recipes) {
 
 // EVENT FOR MAIN CONTAINER FOR MEALS
 divEl.addEventListener('click', e => {
-  if (e.target.nodeName !== 'BUTTON') {
-    return;
+  console.dir(e.target.className)
+ 
+  if (e.target.className !== 
+"main-heart-btn"&& e.target.className !== "main-heart-btn main-heart-btn-favorite") {
+      return;
   }
-  const btnHeart = e.target;
+  
+     const btnHeart = e.target;
   btnHeart.classList.toggle('main-heart-btn-favorite');
-  const heartId = e.target.id;
-  localStorage.setItem('favorites', JSON.stringify(heartId));
+  console.log(btnHeart.classList)
+    const heartId = e.target.id;
+  fetchWholeReceipt(heartId).then(data => {
+    if (data.length === 0) {
+      console.log(`Error`);
+      return;
+    }
+    let indexHeartFav = arrayFavourites.findIndex(element => element.title === data.title);
+    console.log(indexHeartFav)
+
+    if (indexHeartFav !== -1) {
+      
+     arrayFavourites.splice(indexHeartFav, 1);
+  return localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+    }
+    
+    arrayFavourites.push(data)
+    return localStorage.setItem("favourite-items", JSON.stringify(arrayFavourites))
+
+  })
 });
+  
 
 // Add time to field
 function addTimeToField(recipes) {
@@ -629,3 +654,5 @@ function onBeforeMovePagination(e) {
   const { page } = e;
   getMealPagination(page);
 }
+console.log(heartBtnIcon)
+export {heartBtnIcon}
