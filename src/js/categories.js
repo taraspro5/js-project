@@ -60,6 +60,7 @@ async function onClick(evt) {
 }  
 
 async function resetCategories() {
+  btnAllCtg.classList.add("active-all-cat-btn")
   menu.innerHTML = '';
   const btnSelectCtg = document.querySelectorAll('.js-select-category');
   btnSelectCtg.forEach(button => {
@@ -68,7 +69,7 @@ async function resetCategories() {
       button.removeAttribute('disabled');
     }
   });
-  const resp = await axios.get(`${BASE_URL}/recipes`);
+  const resp = await axios.get(`${BASE_URL}/recipes?limit=9`);
   try {
     menu.insertAdjacentHTML('afterbegin', markupMenu(resp.data.results));
   } catch {
