@@ -13,7 +13,8 @@ const fetchWholeReceipt = async id => {
 };
 // refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
 export function onSeeRecipeBtnClick(event) {
-  if (event.target.nodeName !== 'BUTTON' && event.target.nodeName !== 'IMG') {
+  
+  if (event.target.outerText !== "See recipe" && event.target.nodeName !== 'IMG') {
     return;
   }
 refs.modalWindow.innerHTML = ''
@@ -151,7 +152,7 @@ refs.modalWindow.innerHTML = ''
     );
     addToFavBtn.addEventListener('click', onAddToFavBtnClick);
     function onAddToFavBtnClick() {
-       arrayFavourites.push(data);
+             arrayFavourites.push(data);
       addToFavBtn.classList.add('is-hidden');
       removeFromFavBtn.classList.remove('is-hidden');
       console.log(arrayFavourites);
