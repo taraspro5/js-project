@@ -20,14 +20,13 @@ const containerButtons = document.querySelector(
 allButton.addEventListener('click', handlerClick);
 btnAllCategories.addEventListener('click', handlerResetCategories);
 divEl.addEventListener('click', removeFavorite);
+divEl.addEventListener('click', onSeeRecipeBtnClick);
 
 function removeFavorite(evt) {
-  console.log(evt.target);
   const target = evt.target;
   const data = JSON.parse(localStorage.getItem(KEY)) ?? [];
   if (target.classList.contains('favorite-main-heart-btn')) {
     const res = data.filter(({ _id: id }) => id !== target.id);
-    console.log(res);
     localStorage.setItem(KEY, JSON.stringify(res));
     list.innerHTML = addMealToDOM(res);
     const filterArray = res
@@ -37,15 +36,16 @@ function removeFavorite(evt) {
     allButton.innerHTML = markup;
     if (!res.length) {
       containerButtons.classList.add('visually-hidden');
-      containerImg.classList.add('visually-hidden');
       textFavoritesWrapper.classList.remove('visually-hidden');
+      if (window.innerWidth < 768) {
+        containerImg.classList.add('visually-hidden');
+      }
     }
     return;
   }
 }
 
 if (data.length) {
-  console.log(data);
   containerImg.style.display = 'block';
   containerButtons.classList.remove('visually-hidden');
 
@@ -53,10 +53,8 @@ if (data.length) {
   const filterArray = data
     .map(recipe => recipe.category)
     .filter((el, idx, arr) => arr.indexOf(el) === idx);
-  console.log(filterArray);
 
   const markup = createButtons(filterArray);
-  console.log(markup);
   allButton.innerHTML = markup;
   list.innerHTML = addMealToDOM(data);
   textFavoritesWrapper.classList.add('visually-hidden');
@@ -83,7 +81,6 @@ function handlerClick(evt) {
   filterArray = data.filter(
     ({ category }) => category === evt.target.textContent
   );
-  console.log(filterArray);
   list.innerHTML = addMealToDOM(filterArray);
 }
 
