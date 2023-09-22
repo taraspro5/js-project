@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { heartBtnIcon, mainHeartBtn } from './main.section';
-console.log(heartBtnIcon)
+
 const refs = {
   btnTest: document.querySelector('.test-click-btn'),
   modalWindow: document.querySelector('.modal-receipt'),
@@ -13,7 +12,7 @@ const fetchWholeReceipt = async id => {
   );
   return response.data;
 };
-// refs.btnTest.addEventListener('click', onSeeRecipeBtnClick)
+
 export function onSeeRecipeBtnClick(event) {
   
   if (event.target.outerText !== "See recipe" && event.target.nodeName !== 'IMG') {
@@ -157,10 +156,8 @@ refs.modalWindow.innerHTML = ''
       const indexFav = arrayFavourites.findIndex(element => element.title === data.title);
       if (indexFav === -1) {
         arrayFavourites.push(data);
-        console.log(heartBtnIcon)
-       
-        heartBtnIcon.classList.toggle('main-heart-btn-favorite')
-      addToFavBtn.classList.add('is-hidden');
+               
+              addToFavBtn.classList.add('is-hidden');
       removeFromFavBtn.classList.remove('is-hidden');
       console.log(arrayFavourites);
       localStorage.setItem('favourite-items', JSON.stringify(arrayFavourites));
@@ -187,5 +184,5 @@ if (indexFav !== -1) {
 export { createModalReceiptMarkup };
 export { arrayFavourites };
 export { addToFavBtn };
-export { onAddToFavBtnClick };
-export { fetchWholeReceipt };
+export { onAddToFavBtnClick};
+export { fetchWholeReceipt};
