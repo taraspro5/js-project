@@ -239,6 +239,7 @@ divEl.addEventListener('click', e => {
       console.log(`Error`);
       return;
     }
+
     let indexHeartFav = arrayFavourites.findIndex(element => element.title === data.title);
     console.log(indexHeartFav)
 
