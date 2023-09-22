@@ -11,6 +11,7 @@ const refs = {
 
 refs.btnBurger.addEventListener('click', handlerClickerAdd);
 refs.btnCloseModal.addEventListener('click', handlerClickerRemove);
+refs.btnCart.addEventListener('click', handleModalOpen);
 
 function handlerClickerAdd() {
   refs.modal.classList.toggle('display-none');
@@ -22,14 +23,18 @@ function handlerClickerRemove() {
   document.body.style.overflow = 'visible';
 }
 
-if (document.location.pathname === '/index.html') {
-  refs.homeBtn.classList.add('header-active');
- 
-}
-if (document.location.pathname === '/favorite.html') {
-  refs.favorBtn.classList.add('header-active');
-  refs.homeBtn.classList.remove('header-active');
-  
-}
+function navigationColor() {
+  if (document.location.pathname === '/index.html') {
+   refs.homeBtn.classList.add('header-active');
+   refs.favorBtn.classList.remove('header-active');
+   return
+ }
+ if (document.location.pathname === '/favorite.html') {
+   refs.favorBtn.classList.add('header-active');
+   refs.homeBtn.classList.remove('header-active');
+   return
+ } 
+ }
+ navigationColor()
 
-refs.btnCart.addEventListener('click', handleModalOpen);
+
