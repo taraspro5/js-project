@@ -41,7 +41,6 @@ const btnEl = document.getElementById('btn'),
   loaderEl = document.querySelector('.main-loader'),
   mainSearchContainer = document.querySelector('.main-search-menu'),
   yearEl = document.getElementById('year');
-heartBtnIcon = document.querySelector('heart-icon')
   
 
 yearEl.textContent = new Date().getFullYear();
@@ -654,5 +653,4 @@ function onBeforeMovePagination(e) {
   const { page } = e;
   getMealPagination(page);
 }
-console.log(heartBtnIcon)
-export {heartBtnIcon}
+
