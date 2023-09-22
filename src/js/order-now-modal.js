@@ -21,4 +21,4 @@ function handleModalClose() {
   refs.modal.classList.add('is-hidden');
 }
 
-export { toggleModal}
+export { handleModalOpen }
