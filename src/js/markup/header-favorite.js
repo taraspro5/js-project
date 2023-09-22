@@ -23,12 +23,12 @@ function handlerClickerRemove() {
 }
 
 function navigationColor() {
- if (document.location.pathname === '/index.html') {
+ if (window.location.pathname === '/index.html') {
   refs.homeBtn.classList.add('header-active');
   refs.favorBtn.classList.remove('header-active');
   return
 }
-if (document.location.pathname === '/favorite.html') {
+if (window.location.pathname === '/favorite.html') {
   refs.favorBtn.classList.add('header-active');
   refs.homeBtn.classList.remove('header-active');
   return
